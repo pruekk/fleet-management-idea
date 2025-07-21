@@ -1,252 +1,164 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Edit, Trash2, Search, Filter, Building2, Phone, MapPin } from "lucide-react"
+import { Plus, Search, Edit, Trash2, Building2 } from "lucide-react"
 
 export default function CompaniesPage() {
-  const [companies, setCompanies] = useState([
+  const [searchTerm, setSearchTerm] = useState("")
+
+  const companies = [
     {
       id: 1,
       name: "บริษัท ก่อสร้าง ABC จำกัด",
-      type: "ลูกค้า",
-      contact: "02-123-4567",
-      contactPerson: "คุณสมชาย",
-      address: "123 ถนนพระราม 4 กรุงเทพฯ",
       taxId: "0123456789012",
+      address: "123 ถนนสุขุมวิท แขวงคลองตัน เขตคลองตัน กรุงเทพฯ 10110",
+      phone: "02-123-4567",
+      email: "contact@abc-construction.com",
+      status: "active",
+      projects: 15,
+      totalValue: 2500000,
     },
     {
       id: 2,
-      name: "บริษัท วัสดุก่อสร้าง B จำกัด",
-      type: "ซัพพลายเออร์",
-      contact: "02-234-5678",
-      contactPerson: "คุณสมหญิง",
-      address: "456 ถนนสุขุมวิท กรุงเทพฯ",
-      taxId: "0234567890123",
+      name: "บริษัท พัฒนาอสังหาริมทรัพย์ XYZ จำกัด",
+      taxId: "0987654321098",
+      address: "456 ถนนพหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ 10900",
+      phone: "02-987-6543",
+      email: "info@xyz-property.com",
+      status: "active",
+      projects: 8,
+      totalValue: 1800000,
     },
     {
       id: 3,
-      name: "บริษัท โครงการ C จำกัด",
-      type: "ลูกค้า",
-      contact: "02-345-6789",
-      contactPerson: "คุณสมศักดิ์",
-      address: "789 ถนนรัชดาภิเษก กรุงเทพฯ",
-      taxId: "0345678901234",
+      name: "บริษัท โครงสร้างพื้นฐาน DEF จำกัด",
+      taxId: "1122334455667",
+      address: "789 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ 10400",
+      phone: "02-111-2233",
+      email: "contact@def-infrastructure.com",
+      status: "inactive",
+      projects: 3,
+      totalValue: 750000,
     },
-  ])
+  ]
 
-  const [newCompany, setNewCompany] = useState({
-    name: "",
-    type: "ลูกค้า",
-    contact: "",
-    contactPerson: "",
-    address: "",
-    taxId: "",
-  })
+  const filteredCompanies = companies.filter(
+    (company) => company.name.toLowerCase().includes(searchTerm.toLowerCase()) || company.taxId.includes(searchTerm),
+  )
 
-  const handleAddCompany = () => {
-    if (newCompany.name && newCompany.contact && newCompany.contactPerson) {
-      setCompanies([
-        ...companies,
-        {
-          id: companies.length + 1,
-          name: newCompany.name,
-          type: newCompany.type,
-          contact: newCompany.contact,
-          contactPerson: newCompany.contactPerson,
-          address: newCompany.address,
-          taxId: newCompany.taxId,
-        },
-      ])
-      setNewCompany({
-        name: "",
-        type: "ลูกค้า",
-        contact: "",
-        contactPerson: "",
-        address: "",
-        taxId: "",
-      })
-    }
+  const getStatusBadge = (status: string) => {
+    return status === "active" ? (
+      <Badge className="bg-green-100 text-green-800">ใช้งาน</Badge>
+    ) : (
+      <Badge variant="secondary">ไม่ใช้งาน</Badge>
+    )
+  }
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
+      minimumFractionDigits: 0,
+    }).format(amount)
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">จัดการบริษัท</h1>
-        <p className="text-gray-600">ข้อมูลบริษัทและหน่วยงานต่างๆ</p>
+        <h1 className="text-3xl font-bold tracking-tight">จัดการข้อมูลบริษัท</h1>
+        <p className="text-muted-foreground">จัดการข้อมูลบริษัทลูกค้าและคู่ค้า</p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                รายการบริษัท
-              </CardTitle>
-              <CardDescription>จัดการข้อมูลบริษัททั้งหมด</CardDescription>
-            </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  เพิ่มบริษัท
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>เพิ่มบริษัทใหม่</DialogTitle>
-                  <DialogDescription>กรอกข้อมูลบริษัทใหม่</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">ชื่อบริษัท</Label>
-                    <Input
-                      id="name"
-                      value={newCompany.name}
-                      onChange={(e) => setNewCompany({ ...newCompany, name: e.target.value })}
-                      placeholder="ชื่อบริษัท"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="type">ประเภท</Label>
-                      <Select
-                        value={newCompany.type}
-                        onValueChange={(value) => setNewCompany({ ...newCompany, type: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="เลือกประเภท" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="ลูกค้า">ลูกค้า</SelectItem>
-                          <SelectItem value="ซัพพลายเออร์">ซัพพลายเออร์</SelectItem>
-                          <SelectItem value="พาร์ทเนอร์">พาร์ทเนอร์</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="taxId">เลขประจำตัวผู้เสียภาษี</Label>
-                      <Input
-                        id="taxId"
-                        value={newCompany.taxId}
-                        onChange={(e) => setNewCompany({ ...newCompany, taxId: e.target.value })}
-                        placeholder="0123456789012"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="contact">เบอร์ติดต่อ</Label>
-                      <Input
-                        id="contact"
-                        value={newCompany.contact}
-                        onChange={(e) => setNewCompany({ ...newCompany, contact: e.target.value })}
-                        placeholder="02-123-4567"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="contactPerson">ผู้ติดต่อ</Label>
-                      <Input
-                        id="contactPerson"
-                        value={newCompany.contactPerson}
-                        onChange={(e) => setNewCompany({ ...newCompany, contactPerson: e.target.value })}
-                        placeholder="คุณสมชาย"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="address">ที่อยู่</Label>
-                    <Textarea
-                      id="address"
-                      value={newCompany.address}
-                      onChange={(e) => setNewCompany({ ...newCompany, address: e.target.value })}
-                      placeholder="ที่อยู่บริษัท"
-                      rows={3}
-                    />
-                  </div>
-                  <Button onClick={handleAddCompany} className="w-full">
-                    เพิ่มบริษัท
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="ค้นหาชื่อบริษัท..." className="pl-10" />
-            </div>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              กรอง
-            </Button>
-          </div>
+      {/* Header Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="ค้นหาบริษัท..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          เพิ่มบริษัทใหม่
+        </Button>
+      </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ชื่อบริษัท</TableHead>
-                <TableHead>ประเภท</TableHead>
-                <TableHead>ผู้ติดต่อ</TableHead>
-                <TableHead>เบอร์ติดต่อ</TableHead>
-                <TableHead>ที่อยู่</TableHead>
-                <TableHead>การจัดการ</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {companies.map((company) => (
-                <TableRow key={company.id}>
-                  <TableCell className="font-medium">{company.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{company.type}</Badge>
-                  </TableCell>
-                  <TableCell>{company.contactPerson}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <Phone className="h-4 w-4 text-muted-foreground" />
-                      {company.contact}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="truncate max-w-xs">{company.address}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {/* Companies Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredCompanies.map((company) => (
+          <Card key={company.id} className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Building2 className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg leading-tight">{company.name}</CardTitle>
+                    <CardDescription className="text-sm">เลขประจำตัวผู้เสียภาษี: {company.taxId}</CardDescription>
+                  </div>
+                </div>
+                {getStatusBadge(company.status)}
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">ที่อยู่:</span>
+                  <p className="text-gray-800 mt-1">{company.address}</p>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">โทรศัพท์:</span>
+                  <span className="ml-2 text-gray-800">{company.phone}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">อีเมล:</span>
+                  <span className="ml-2 text-gray-800">{company.email}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{company.projects}</div>
+                  <div className="text-xs text-gray-600">โครงการ</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">{formatCurrency(company.totalValue)}</div>
+                  <div className="text-xs text-gray-600">มูลค่ารวม</div>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-3">
+                <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+                  <Edit className="h-4 w-4 mr-1" />
+                  แก้ไข
+                </Button>
+                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 bg-transparent">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredCompanies.length === 0 && (
+        <div className="text-center py-12">
+          <Building2 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">ไม่พบข้อมูลบริษัท</h3>
+          <p className="text-gray-600 mb-4">ไม่พบบริษัทที่ตรงกับคำค้นหา "{searchTerm}"</p>
+          <Button variant="outline" onClick={() => setSearchTerm("")}>
+            ล้างการค้นหา
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

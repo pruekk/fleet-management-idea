@@ -11,21 +11,23 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [currentRole, setCurrentRole] = useState("ฝ่ายบริหาร")
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
       <Header
         currentRole={currentRole}
         setCurrentRole={setCurrentRole}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <div className="flex">
-        <Sidebar open={sidebarOpen} currentRole={currentRole} />
-        <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-64" : "ml-16"}`}>
-          <div className="p-6">{children}</div>
+      <div className="flex flex-1 overflow-hidden pt-16">
+        <Sidebar open={sidebarOpen} currentRole={currentRole} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <main className={`flex-1 transition-all duration-300 overflow-y-auto ${sidebarOpen ? "ml-64" : "ml-20"}`}>
+          <div className="p-6">
+            <div className="max-w-7xl mx-auto">{children}</div>
+          </div>
         </main>
       </div>
     </div>

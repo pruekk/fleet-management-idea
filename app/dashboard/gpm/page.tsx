@@ -6,64 +6,65 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Edit, Trash2 } from "lucide-react"
 
-export default function CompanyExpensesPage() {
-  const expensesData = [
-    { id: 1, date: "2023-03-01", category: "ค่าเช่า", description: "ค่าเช่าสำนักงาน", amount: 20000 },
-    { id: 2, date: "2023-03-05", category: "ค่าสาธารณูปโภค", description: "ค่าน้ำค่าไฟ", amount: 5000 },
+export default function GPMPage() {
+  const gpmData = [
+    { id: 1, month: "มกราคม", year: 2023, revenue: 500000, expenses: 300000, gpm: 200000, gpmPercentage: 40 },
+    { id: 2, month: "กุมภาพันธ์", year: 2023, revenue: 550000, expenses: 320000, gpm: 230000, gpmPercentage: 41.8 },
+    { id: 3, month: "มีนาคม", year: 2023, revenue: 600000, expenses: 350000, gpm: 250000, gpmPercentage: 41.6 },
   ]
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">รายจ่ายบริษัท</h1>
+        <h1 className="text-3xl font-bold">GPM (Gross Profit Margin)</h1>
         <Dialog>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              เพิ่มรายจ่ายใหม่
+              เพิ่มข้อมูล GPM ใหม่
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>เพิ่มรายจ่ายใหม่</DialogTitle>
+              <DialogTitle>เพิ่มข้อมูล GPM ใหม่</DialogTitle>
             </DialogHeader>
             <form className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="date" className="text-right">
-                  วันที่
-                </Label>
-                <Input id="date" type="date" defaultValue="2023-03-01" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="category" className="text-right">
-                  หมวดหมู่
+                <Label htmlFor="month" className="text-right">
+                  เดือน
                 </Label>
                 <Select>
                   <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="เลือกหมวดหมู่" />
+                    <SelectValue placeholder="เลือกเดือน" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ค่าเช่า">ค่าเช่า</SelectItem>
-                    <SelectItem value="ค่าสาธารณูปโภค">ค่าสาธารณูปโภค</SelectItem>
-                    <SelectItem value="เงินเดือนพนักงาน">เงินเดือนพนักงาน</SelectItem>
+                    <SelectItem value="มกราคม">มกราคม</SelectItem>
+                    <SelectItem value="กุมภาพันธ์">กุมภาพันธ์</SelectItem>
+                    <SelectItem value="มีนาคม">มีนาคม</SelectItem>
+                    {/* Add more months */}
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  รายละเอียด
+                <Label htmlFor="year" className="text-right">
+                  ปี
                 </Label>
-                <Textarea id="description" defaultValue="ค่าเช่าสำนักงาน" className="col-span-3" />
+                <Input id="year" type="number" defaultValue={2023} className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount" className="text-right">
-                  จำนวนเงิน
+                <Label htmlFor="revenue" className="text-right">
+                  รายรับ
                 </Label>
-                <Input id="amount" type="number" defaultValue={0} className="col-span-3" />
+                <Input id="revenue" type="number" defaultValue={0} className="col-span-3" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="expenses" className="text-right">
+                  รายจ่าย
+                </Label>
+                <Input id="expenses" type="number" defaultValue={0} className="col-span-3" />
               </div>
               <Button type="submit" className="col-span-4">
                 บันทึก
@@ -75,26 +76,30 @@ export default function CompanyExpensesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>รายการรายจ่าย</CardTitle>
+          <CardTitle>ข้อมูล GPM</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>วันที่</TableHead>
-                <TableHead>หมวดหมู่</TableHead>
-                <TableHead>รายละเอียด</TableHead>
-                <TableHead>จำนวนเงิน</TableHead>
+                <TableHead>เดือน</TableHead>
+                <TableHead>ปี</TableHead>
+                <TableHead>รายรับ</TableHead>
+                <TableHead>รายจ่าย</TableHead>
+                <TableHead>GPM</TableHead>
+                <TableHead>GPM (%)</TableHead>
                 <TableHead>การจัดการ</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {expensesData.map((data) => (
+              {gpmData.map((data) => (
                 <TableRow key={data.id}>
-                  <TableCell>{data.date}</TableCell>
-                  <TableCell>{data.category}</TableCell>
-                  <TableCell>{data.description}</TableCell>
-                  <TableCell>{data.amount.toLocaleString()}</TableCell>
+                  <TableCell>{data.month}</TableCell>
+                  <TableCell>{data.year}</TableCell>
+                  <TableCell>{data.revenue.toLocaleString()}</TableCell>
+                  <TableCell>{data.expenses.toLocaleString()}</TableCell>
+                  <TableCell>{data.gpm.toLocaleString()}</TableCell>
+                  <TableCell>{data.gpmPercentage.toFixed(2)}%</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button variant="outline" size="icon">

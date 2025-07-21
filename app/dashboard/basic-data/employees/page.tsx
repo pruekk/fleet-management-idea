@@ -1,242 +1,226 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Edit, Trash2, Search, Filter, Users } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Plus, Search, Edit, Trash2, User, Phone, Mail, MapPin } from "lucide-react"
 
 export default function EmployeesPage() {
-  const [employees, setEmployees] = useState([
+  const [searchTerm, setSearchTerm] = useState("")
+
+  const employees = [
     {
       id: 1,
-      name: "สมชาย ใจดี",
+      name: "นายสมชาย ใจดี",
       position: "คนขับรถโม่",
+      department: "ฝ่ายปฏิบัติการ",
       phone: "081-234-5678",
-      status: "ทำงาน",
+      email: "somchai@company.com",
+      address: "123 ถนนพระราม 4 แขวงสุริยวงศ์ เขตบางรัก กรุงเทพฯ 10500",
+      hireDate: "2020-01-15",
       salary: 18000,
-      startDate: "2023-01-15",
+      status: "active",
+      truckAssigned: "83-5947(A201)",
+      avatar: "/placeholder-user.jpg",
     },
     {
       id: 2,
-      name: "สมหญิง รักงาน",
-      position: "พนักงานทั่วไป",
+      name: "นายสมศักดิ์ รักงาน",
+      position: "คนขับรถโม่",
+      department: "ฝ่ายปฏิบัติการ",
       phone: "082-345-6789",
-      status: "ลา",
-      salary: 15000,
-      startDate: "2023-03-20",
+      email: "somsak@company.com",
+      address: "456 ถนนลาดพร้าว แขวงลาดพร้าว เขตลาดพร้าว กรุงเทพฯ 10230",
+      hireDate: "2019-03-20",
+      salary: 19000,
+      status: "active",
+      truckAssigned: "83-5948(A202)",
+      avatar: "/placeholder-user.jpg",
     },
     {
       id: 3,
-      name: "สมศักดิ์ ขยัน",
-      position: "คนขับรถโม่",
+      name: "นายสมหญิง ขยันทำ",
+      position: "ช่างซ่อมบำรุง",
+      department: "ฝ่ายซ่อมบำรุง",
       phone: "083-456-7890",
-      status: "ทำงาน",
-      salary: 18000,
-      startDate: "2023-02-10",
+      email: "somying@company.com",
+      address: "789 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ 10400",
+      hireDate: "2021-06-10",
+      salary: 22000,
+      status: "active",
+      truckAssigned: null,
+      avatar: "/placeholder-user.jpg",
     },
-  ])
+    {
+      id: 4,
+      name: "นางสาวสมศรี มีความสุข",
+      position: "เจ้าหน้าที่บัญชี",
+      department: "ฝ่ายบัญชี/การเงิน",
+      phone: "084-567-8901",
+      email: "somsri@company.com",
+      address: "321 ถนนสีลม แขวงสีลม เขตบางรัก กรุงเทพฯ 10500",
+      hireDate: "2018-09-05",
+      salary: 25000,
+      status: "active",
+      truckAssigned: null,
+      avatar: "/placeholder-user.jpg",
+    },
+    {
+      id: 5,
+      name: "นายสมปอง หยุดงาน",
+      position: "คนขับรถโม่",
+      department: "ฝ่ายปฏิบัติการ",
+      phone: "085-678-9012",
+      email: "sompong@company.com",
+      address: "654 ถนนเพชรบุรี แขวงมักกะสัน เขตราชเทวี กรุงเทพฯ 10400",
+      hireDate: "2017-12-01",
+      salary: 17000,
+      status: "inactive",
+      truckAssigned: null,
+      avatar: "/placeholder-user.jpg",
+    },
+  ]
 
-  const [newEmployee, setNewEmployee] = useState({
-    name: "",
-    position: "",
-    phone: "",
-    status: "ทำงาน",
-    salary: "",
-    startDate: "",
-  })
+  const filteredEmployees = employees.filter(
+    (employee) =>
+      employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      employee.department.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
-  const handleAddEmployee = () => {
-    if (newEmployee.name && newEmployee.position && newEmployee.phone) {
-      setEmployees([
-        ...employees,
-        {
-          id: employees.length + 1,
-          name: newEmployee.name,
-          position: newEmployee.position,
-          phone: newEmployee.phone,
-          status: newEmployee.status,
-          salary: Number.parseInt(newEmployee.salary) || 0,
-          startDate: newEmployee.startDate,
-        },
-      ])
-      setNewEmployee({
-        name: "",
-        position: "",
-        phone: "",
-        status: "ทำงาน",
-        salary: "",
-        startDate: "",
-      })
-    }
+  const getStatusBadge = (status: string) => {
+    return status === "active" ? (
+      <Badge className="bg-green-100 text-green-800">ทำงาน</Badge>
+    ) : (
+      <Badge variant="secondary">หยุดงาน</Badge>
+    )
+  }
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("th-TH", {
+      style: "currency",
+      currency: "THB",
+      minimumFractionDigits: 0,
+    }).format(amount)
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">จัดการพนักงาน</h1>
-        <p className="text-gray-600">ข้อมูลพนักงานทั้งหมดในระบบ</p>
+        <h1 className="text-3xl font-bold tracking-tight">จัดการข้อมูลพนักงาน</h1>
+        <p className="text-muted-foreground">จัดการข้อมูลพนักงานและตำแหน่งงาน</p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                รายการพนักงาน
-              </CardTitle>
-              <CardDescription>จัดการข้อมูลพนักงานทั้งหมด</CardDescription>
-            </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  เพิ่มพนักงาน
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>เพิ่มพนักงานใหม่</DialogTitle>
-                  <DialogDescription>กรอกข้อมูลพนักงานใหม่</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">ชื่อ-นามสกุล</Label>
-                    <Input
-                      id="name"
-                      value={newEmployee.name}
-                      onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                      placeholder="ชื่อ-นามสกุล"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="position">ตำแหน่ง</Label>
-                      <Select
-                        value={newEmployee.position}
-                        onValueChange={(value) => setNewEmployee({ ...newEmployee, position: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="เลือกตำแหน่ง" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="คนขับรถโม่">คนขับรถโม่</SelectItem>
-                          <SelectItem value="พนักงานทั่วไป">พนักงานทั่วไป</SelectItem>
-                          <SelectItem value="หัวหน้าแผนก">หัวหน้าแผนก</SelectItem>
-                          <SelectItem value="ช่างซ่อมบำรุง">ช่างซ่อมบำรุง</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">เบอร์โทร</Label>
-                      <Input
-                        id="phone"
-                        value={newEmployee.phone}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
-                        placeholder="081-234-5678"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="salary">เงินเดือน</Label>
-                      <Input
-                        id="salary"
-                        type="number"
-                        value={newEmployee.salary}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, salary: e.target.value })}
-                        placeholder="15000"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="startDate">วันที่เริ่มงาน</Label>
-                      <Input
-                        id="startDate"
-                        type="date"
-                        value={newEmployee.startDate}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, startDate: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                  <Button onClick={handleAddEmployee} className="w-full">
-                    เพิ่มพนักงาน
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="ค้นหาชื่อพนักงาน..." className="pl-10" />
-            </div>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              กรอง
-            </Button>
-          </div>
+      {/* Header Actions */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="ค้นหาพนักงาน..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          เพิ่มพนักงานใหม่
+        </Button>
+      </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ชื่อ-นามสกุล</TableHead>
-                <TableHead>ตำแหน่ง</TableHead>
-                <TableHead>เบอร์โทร</TableHead>
-                <TableHead>เงินเดือน</TableHead>
-                <TableHead>วันที่เริ่มงาน</TableHead>
-                <TableHead>สถานะ</TableHead>
-                <TableHead>การจัดการ</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {employees.map((employee) => (
-                <TableRow key={employee.id}>
-                  <TableCell className="font-medium">{employee.name}</TableCell>
-                  <TableCell>{employee.position}</TableCell>
-                  <TableCell>{employee.phone}</TableCell>
-                  <TableCell>฿{employee.salary.toLocaleString()}</TableCell>
-                  <TableCell>{employee.startDate}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={employee.status === "ทำงาน" ? "secondary" : "destructive"}
-                      className={
-                        employee.status === "ทำงาน" ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"
-                      }
-                    >
-                      {employee.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      {/* Employees Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {filteredEmployees.map((employee) => (
+          <Card key={employee.id} className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={employee.avatar || "/placeholder.svg"} alt={employee.name} />
+                    <AvatarFallback>
+                      <User className="h-6 w-6" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle className="text-lg leading-tight">{employee.name}</CardTitle>
+                    <CardDescription>{employee.position}</CardDescription>
+                    <CardDescription className="text-xs">{employee.department}</CardDescription>
+                  </div>
+                </div>
+                {getStatusBadge(employee.status)}
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <span>{employee.phone}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-gray-400" />
+                  <span className="truncate">{employee.email}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                  <span className="text-xs leading-relaxed">{employee.address}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t text-sm">
+                <div>
+                  <span className="font-medium text-gray-600">วันที่เริ่มงาน:</span>
+                  <div className="text-gray-800">{formatDate(employee.hireDate)}</div>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">เงินเดือน:</span>
+                  <div className="text-green-600 font-medium">{formatCurrency(employee.salary)}</div>
+                </div>
+              </div>
+
+              {employee.truckAssigned && (
+                <div className="pt-2 border-t">
+                  <span className="text-sm font-medium text-gray-600">รถที่รับผิดชอบ:</span>
+                  <Badge variant="outline" className="ml-2">
+                    {employee.truckAssigned}
+                  </Badge>
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-3">
+                <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+                  <Edit className="h-4 w-4 mr-1" />
+                  แก้ไข
+                </Button>
+                <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 bg-transparent">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {filteredEmployees.length === 0 && (
+        <div className="text-center py-12">
+          <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">ไม่พบข้อมูลพนักงาน</h3>
+          <p className="text-gray-600 mb-4">ไม่พบพนักงานที่ตรงกับคำค้นหา "{searchTerm}"</p>
+          <Button variant="outline" onClick={() => setSearchTerm("")}>
+            ล้างการค้นหา
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

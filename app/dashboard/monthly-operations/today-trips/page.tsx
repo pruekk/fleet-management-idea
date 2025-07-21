@@ -10,18 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Edit, Trash2, CheckCircle, Clock } from "lucide-react"
 import Truck from "path-to-Truck-icon" // Declare the Truck variable here
 
-export default function TripsPage() {
-  const trips = [
-    { id: 1, date: "2023-03-01", truck: "83-5947(A201)", driver: "นายสมชาย", customer: "บริษัท A", status: "สำเร็จ" },
-    {
-      id: 2,
-      date: "2023-03-01",
-      truck: "83-5948(A202)",
-      driver: "นายสมหญิง",
-      customer: "บริษัท B",
-      status: "กำลังดำเนินการ",
-    },
-    { id: 3, date: "2023-03-02", truck: "83-5947(A201)", driver: "นายสมชาย", customer: "บริษัท C", status: "สำเร็จ" },
+export default function TodayTripsPage() {
+  const todayTrips = [
+    { id: 1, time: "08:00", truck: "83-5947(A201)", driver: "นายสมชาย", customer: "บริษัท A", status: "สำเร็จ" },
+    { id: 2, time: "09:30", truck: "83-5948(A202)", driver: "นายสมหญิง", customer: "บริษัท B", status: "กำลังดำเนินการ" },
+    { id: 3, time: "11:00", truck: "83-5949(A203)", driver: "นายสมศักดิ์", customer: "บริษัท C", status: "สำเร็จ" },
   ]
 
   const todayTripsSummary = {
@@ -33,24 +26,24 @@ export default function TripsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">เที่ยววิ่ง</h1>
+        <h1 className="text-3xl font-bold">เที่ยววิ่งวันนี้</h1>
         <Dialog>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              เพิ่มเที่ยววิ่ง
+              เพิ่มเที่ยววิ่งวันนี้
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>เพิ่มเที่ยววิ่ง</DialogTitle>
+              <DialogTitle>เพิ่มเที่ยววิ่งวันนี้</DialogTitle>
             </DialogHeader>
             <form className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="tripDate" className="text-right">
-                  วันที่
+                <Label htmlFor="tripTime" className="text-right">
+                  เวลา
                 </Label>
-                <Input id="tripDate" type="date" defaultValue="2023-03-01" className="col-span-3" />
+                <Input id="tripTime" type="time" defaultValue="08:00" className="col-span-3" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="truck" className="text-right">
@@ -141,13 +134,13 @@ export default function TripsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>รายการเที่ยววิ่ง</CardTitle>
+          <CardTitle>รายการเที่ยววิ่งวันนี้</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>วันที่</TableHead>
+                <TableHead>เวลา</TableHead>
                 <TableHead>รถโม่</TableHead>
                 <TableHead>คนขับ</TableHead>
                 <TableHead>ลูกค้า</TableHead>
@@ -156,9 +149,9 @@ export default function TripsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {trips.map((trip) => (
+              {todayTrips.map((trip) => (
                 <TableRow key={trip.id}>
-                  <TableCell>{trip.date}</TableCell>
+                  <TableCell>{trip.time}</TableCell>
                   <TableCell>{trip.truck}</TableCell>
                   <TableCell>{trip.driver}</TableCell>
                   <TableCell>{trip.customer}</TableCell>
