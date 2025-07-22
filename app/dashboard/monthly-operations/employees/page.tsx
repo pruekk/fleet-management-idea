@@ -42,9 +42,12 @@ export default function MonthlyEmployeesPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">ปฏิบัติการรายเดือน: พนักงาน</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">ปฏิบัติการรายเดือน: พนักงาน</h1>
+          <p className="text-gray-600">จัดการบันทึกการทำงานและเงินเดือนของพนักงานรายเดือน</p>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
@@ -61,20 +64,23 @@ export default function MonthlyEmployeesPage() {
                 <Label htmlFor="month" className="text-right">
                   เดือน
                 </Label>
-                <Select
-                  id="month"
-                  value={newRecord.month}
-                  onChange={(e) => setNewRecord({ ...newRecord, month: e.target.value })}
-                  className="col-span-3"
-                  required
-                >
-                  <SelectTrigger>
+                <Select value={newRecord.month} onValueChange={(value) => setNewRecord({ ...newRecord, month: value })}>
+                  <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="เลือกเดือน" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="มกราคม">มกราคม</SelectItem>
                     <SelectItem value="กุมภาพันธ์">กุมภาพันธ์</SelectItem>
-                    {/* Add more months */}
+                    <SelectItem value="มีนาคม">มีนาคม</SelectItem>
+                    <SelectItem value="เมษายน">เมษายน</SelectItem>
+                    <SelectItem value="พฤษภาคม">พฤษภาคม</SelectItem>
+                    <SelectItem value="มิถุนายน">มิถุนายน</SelectItem>
+                    <SelectItem value="กรกฎาคม">กรกฎาคม</SelectItem>
+                    <SelectItem value="สิงหาคม">สิงหาคม</SelectItem>
+                    <SelectItem value="กันยายน">กันยายน</SelectItem>
+                    <SelectItem value="ตุลาคม">ตุลาคม</SelectItem>
+                    <SelectItem value="พฤศจิกายน">พฤศจิกายน</SelectItem>
+                    <SelectItem value="ธันวาคม">ธันวาคม</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -136,7 +142,6 @@ export default function MonthlyEmployeesPage() {
           </DialogContent>
         </Dialog>
       </div>
-      <p className="text-gray-600">จัดการบันทึกการทำงานและเงินเดือนของพนักงานรายเดือน</p>
 
       <Card className="shadow-sm">
         <CardHeader>

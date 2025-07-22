@@ -11,7 +11,6 @@ import {
   Users,
   Truck,
   Factory,
-  UserCheck,
   FileText,
   Calendar,
   DollarSign,
@@ -31,7 +30,18 @@ import {
   Shield,
   UserCog,
   Cog,
+  Building,
+  FileCheck,
+  Calculator,
+  TrendingUp,
+  UserPlus,
 } from "lucide-react"
+
+interface SidebarProps {
+  open: boolean
+  currentRole: string
+  onToggle: () => void
+}
 
 interface MenuItem {
   title: string
@@ -51,16 +61,6 @@ const menuItems: MenuItem[] = [
     title: "ข้อมูลพื้นฐาน",
     icon: Package,
     children: [
-      {
-        title: "บริษัท",
-        href: "/dashboard/basic-data/companies",
-        icon: Building2,
-      },
-      {
-        title: "พนักงาน",
-        href: "/dashboard/basic-data/employees",
-        icon: Users,
-      },
       {
         title: "รถโม่",
         href: "/dashboard/basic-data/trucks",
@@ -92,17 +92,43 @@ const menuItems: MenuItem[] = [
         href: "/dashboard/customers/quotations",
         icon: FileText,
       },
+      {
+        title: "ซัพพลายเออร์",
+        href: "/dashboard/suppliers",
+        icon: Building2,
+      },
+    ],
+  },
+  {
+    title: "พนักงาน",
+    icon: Users,
+    children: [
+      {
+        title: "ข้อมูลพื้นฐาน",
+        href: "/dashboard/employees/basic-info",
+        icon: UserPlus,
+      },
+      {
+        title: "รายได้ประจำเดือน",
+        href: "/dashboard/employees/monthly-income",
+        icon: DollarSign,
+      },
+      {
+        title: "รายได้ประจำปี",
+        href: "/dashboard/employees/annual-income",
+        icon: TrendingUp,
+      },
+      {
+        title: "จัดการภาษี",
+        href: "/dashboard/employees/tax-management",
+        icon: Calculator,
+      },
     ],
   },
   {
     title: "การดำเนินงานรายเดือน",
     icon: Calendar,
     children: [
-      {
-        title: "เที่ยววิ่งวันนี้",
-        href: "/dashboard/monthly-operations/today-trips",
-        icon: Calendar,
-      },
       {
         title: "เที่ยววิ่ง",
         href: "/dashboard/monthly-operations/trips",
@@ -112,11 +138,6 @@ const menuItems: MenuItem[] = [
         title: "วางบิล",
         href: "/dashboard/monthly-operations/billing",
         icon: Receipt,
-      },
-      {
-        title: "พนักงาน",
-        href: "/dashboard/monthly-operations/employees",
-        icon: UserCheck,
       },
       {
         title: "น้ำมัน",
@@ -136,19 +157,25 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    title: "รายได้บริษัท",
-    href: "/dashboard/company-income",
-    icon: DollarSign,
-  },
-  {
-    title: "รายจ่ายบริษัท",
-    href: "/dashboard/company-expenses",
-    icon: DollarSign,
-  },
-  {
-    title: "ซัพพลายเออร์",
-    href: "/dashboard/suppliers",
-    icon: Building2,
+    title: "บริษัท",
+    icon: Building,
+    children: [
+      {
+        title: "รายได้บริษัท",
+        href: "/dashboard/company-income",
+        icon: DollarSign,
+      },
+      {
+        title: "รายจ่ายบริษัท",
+        href: "/dashboard/company-expenses",
+        icon: DollarSign,
+      },
+      {
+        title: "ตั้งค่าบริษัท",
+        href: "/dashboard/company-settings",
+        icon: FileCheck,
+      },
+    ],
   },
   {
     title: "รายงาน",
@@ -204,34 +231,33 @@ const menuItems: MenuItem[] = [
         title: "ผู้ใช้งาน",
         href: "/dashboard/settings/users",
         icon: Users,
-        roles: ["admin", "manager"],
+        roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
       },
       {
         title: "บทบาท",
         href: "/dashboard/settings/roles",
         icon: Shield,
-        roles: ["admin"],
+        roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
       },
       {
         title: "สิทธิ์การเข้าถึง",
         href: "/dashboard/settings/permissions",
         icon: UserCog,
-        roles: ["admin"],
+        roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
       },
       {
         title: "ระบบ",
         href: "/dashboard/settings/system",
         icon: Cog,
-        roles: ["admin"],
+        roles: ["ผู้ดูแลระบบ"],
       },
     ],
   },
 ]
 
-export function Sidebar() {
+export function Sidebar({ open, currentRole, onToggle }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
-  const userRole = "admin" // This would come from your auth context
 
   const toggleExpanded = (title: string) => {
     setExpandedItems((prev) => (prev.includes(title) ? prev.filter((item) => item !== title) : [...prev, title]))
@@ -239,7 +265,7 @@ export function Sidebar() {
 
   const isItemVisible = (item: MenuItem) => {
     if (!item.roles) return true
-    return item.roles.includes(userRole)
+    return item.roles.includes(currentRole)
   }
 
   const renderMenuItem = (item: MenuItem, level = 0) => {
@@ -261,12 +287,12 @@ export function Sidebar() {
             )}
           >
             <div className="flex items-center">
-              <item.icon className="mr-3 h-4 w-4" />
-              {item.title}
+              <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
+              {open && <span>{item.title}</span>}
             </div>
-            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            {open && (isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />)}
           </button>
-          {isExpanded && (
+          {isExpanded && open && (
             <div className="mt-1 space-y-1">{item.children.map((child) => renderMenuItem(child, level + 1))}</div>
           )}
         </div>
@@ -283,14 +309,19 @@ export function Sidebar() {
           level > 0 && "ml-4",
         )}
       >
-        <item.icon className="mr-3 h-4 w-4" />
-        {item.title}
+        <item.icon className="mr-3 h-4 w-4 flex-shrink-0" />
+        {open && <span>{item.title}</span>}
       </Link>
     )
   }
 
   return (
-    <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto">
+    <div
+      className={cn(
+        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto transition-all duration-300",
+        open ? "w-64" : "w-20",
+      )}
+    >
       <nav className="p-4 space-y-2">{menuItems.map((item) => renderMenuItem(item))}</nav>
     </div>
   )

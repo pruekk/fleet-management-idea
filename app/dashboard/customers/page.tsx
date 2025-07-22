@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, Edit, Trash2, Search, Filter, Building2, MapPin, Phone } from "lucide-react"
 
 export default function CustomersPage() {
@@ -15,24 +16,52 @@ export default function CustomersPage() {
       name: "บริษัท ก่อสร้าง ABC จำกัด",
       contact: "คุณสมชาย",
       phone: "02-123-4567",
+      taxId: "0123456789012",
+      address: "123 ถนนสุขุมวิท แขวงคลองตัน เขตคลองตัน กรุงเทพฯ 10110",
+      email: "contact@abc-construction.com",
       factories: 3,
       status: "ใช้งานอยู่",
+      contractValue: "2,500,000",
+      type: "ลูกค้า",
     },
     {
       id: 2,
       name: "บริษัท โครงการใหญ่ จำกัด",
       contact: "คุณสมหญิง",
       phone: "02-234-5678",
+      taxId: "0987654321098",
+      address: "456 ถนนพหลโยธิน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ 10900",
+      email: "info@big-project.com",
       factories: 2,
       status: "ใช้งานอยู่",
+      contractValue: "5,200,000",
+      type: "ลูกค้า",
     },
     {
       id: 3,
       name: "บริษัท พัฒนาที่ดิน จำกัด",
       contact: "คุณสมศักดิ์",
       phone: "02-345-6789",
+      taxId: "1122334455667",
+      address: "789 ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพฯ 10400",
+      email: "contact@land-dev.com",
       factories: 1,
       status: "หยุดใช้งาน",
+      contractValue: "1,800,000",
+      type: "ลูกค้า",
+    },
+    {
+      id: 4,
+      name: "บริษัท วัสดุก่อสร้าง XYZ จำกัด",
+      contact: "คุณสมปอง",
+      phone: "02-456-7890",
+      taxId: "2233445566778",
+      address: "321 ถนนเพชรบุรี แขวงมักกะสัน เขตราชเทวี กรุงเทพฯ 10400",
+      email: "supply@xyz-materials.com",
+      factories: 0,
+      status: "ใช้งานอยู่",
+      contractValue: "800,000",
+      type: "บริษัท",
     },
   ])
 
@@ -58,25 +87,30 @@ export default function CustomersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">จัดการลูกค้า</h1>
-        <p className="text-gray-600">ข้อมูลลูกค้าและโรงงานในระบบ</p>
+        <h1 className="text-3xl font-bold text-gray-900">จัดการลูกค้าและบริษัท</h1>
+        <p className="text-gray-600">ข้อมูลลูกค้า บริษัท และโรงงานในระบบ</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <Tabs defaultValue="customers" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="customers">ลูกค้าและบริษัท</TabsTrigger>
+          <TabsTrigger value="factories">โรงงาน</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="customers">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-5 w-5" />
-                    รายชื่อลูกค้า
+                    รายชื่อลูกค้าและบริษัท
                   </CardTitle>
-                  <CardDescription>ลูกค้าทั้งหมดในระบบ</CardDescription>
+                  <CardDescription>ลูกค้าและบริษัทคู่ค้าทั้งหมดในระบบ</CardDescription>
                 </div>
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
-                  เพิ่มลูกค้า
+                  เพิ่มลูกค้า/บริษัท
                 </Button>
               </div>
             </CardHeader>
@@ -84,7 +118,7 @@ export default function CustomersPage() {
               <div className="flex gap-4 mb-4">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="ค้นหาชื่อลูกค้า..." className="pl-10" />
+                  <Input placeholder="ค้นหาชื่อบริษัท..." className="pl-10" />
                 </div>
                 <Button variant="outline">
                   <Filter className="mr-2 h-4 w-4" />
@@ -96,9 +130,11 @@ export default function CustomersPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>ชื่อบริษัท</TableHead>
+                    <TableHead>ประเภท</TableHead>
                     <TableHead>ผู้ติดต่อ</TableHead>
                     <TableHead>เบอร์โทร</TableHead>
-                    <TableHead>โรงงาน</TableHead>
+                    <TableHead>เลขประจำตัวผู้เสียภาษี</TableHead>
+                    <TableHead>มูลค่าสัญญา</TableHead>
                     <TableHead>สถานะ</TableHead>
                     <TableHead>การจัดการ</TableHead>
                   </TableRow>
@@ -107,6 +143,16 @@ export default function CustomersPage() {
                   {customers.map((customer) => (
                     <TableRow key={customer.id}>
                       <TableCell className="font-medium">{customer.name}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={
+                            customer.type === "ลูกค้า" ? "bg-blue-50 text-blue-700" : "bg-green-50 text-green-700"
+                          }
+                        >
+                          {customer.type}
+                        </Badge>
+                      </TableCell>
                       <TableCell>{customer.contact}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -114,9 +160,8 @@ export default function CustomersPage() {
                           {customer.phone}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{customer.factories} แห่ง</Badge>
-                      </TableCell>
+                      <TableCell className="font-mono text-sm">{customer.taxId}</TableCell>
+                      <TableCell className="font-medium text-green-600">฿{customer.contractValue}</TableCell>
                       <TableCell>
                         <Badge
                           variant={customer.status === "ใช้งานอยู่" ? "secondary" : "destructive"}
@@ -141,9 +186,9 @@ export default function CustomersPage() {
               </Table>
             </CardContent>
           </Card>
-        </div>
+        </TabsContent>
 
-        <div>
+        <TabsContent value="factories">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -177,8 +222,8 @@ export default function CustomersPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
