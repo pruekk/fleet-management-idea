@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Edit, Trash2, CheckCircle, Clock } from "lucide-react"
-import Truck from "path-to-Truck-icon" // Declare the Truck variable here
 
 export default function TodayTripsPage() {
   const todayTrips = [
