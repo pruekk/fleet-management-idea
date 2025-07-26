@@ -66,6 +66,12 @@ export default function BillingPage() {
 	]);
 
 	// คำนวณสถิติ
+	const totalTrips = billingData.reduce((sum, item) => sum + item.tripsPerPlant, 0);
+	const totalYoks = billingData.reduce((sum, item) => sum + item.yokCount, 0);
+	const totalBilling = billingData.reduce((sum, item) => sum + item.totalBilling, 0);
+	const totalVat = billingData.reduce((sum, item) => sum + item.vat, 0);
+	const averageBillingPerTrip = totalTrips > 0 ? totalBilling / totalTrips : 0;
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
