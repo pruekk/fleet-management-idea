@@ -93,7 +93,6 @@ fleet-management-idea/
 │   ├── header.tsx        # ส่วนหัว (พร้อม theme toggle)
 │   ├── sidebar.tsx       # แถบข้าง (responsive)
 │   ├── app-layout.tsx    # เลย์เอาต์หลัก (header + sidebar)
-│   ├── admin-page-layout.tsx # เลย์เอาต์มาตรฐานสำหรับหน้า admin
 │   └── theme-provider.tsx # Provider สำหรับ dark mode
 ├── hooks/                # Custom React hooks
 ├── lib/                  # ฟังก์ชันช่วยเหลือ
@@ -173,39 +172,6 @@ fleet-management-idea/
 - เทมเพลตสำหรับงานต่างๆ
 - ดาวน์โหลดและอัพโหลด
 - คู่มือการใช้งาน
-
-## 🎯 การพัฒนาหน้าใหม่
-
-### การใช้ AdminPageLayout สำหรับหน้า Admin
-
-สำหรับหน้าใหม่ในส่วน admin ใช้ `AdminPageLayout` เพื่อความสม่ำเสมอของ UI:
-
-```tsx
-import { AdminPageLayout } from "@/components/admin-page-layout";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-
-export default function NewAdminPage() {
-	const headerActions = (
-		<Button>
-			<Plus className="h-4 w-4 mr-2" />
-			เพิ่มใหม่
-		</Button>
-	);
-
-	return (
-		<AdminPageLayout title="ชื่อหน้า" description="คำอธิบายหน้า" headerActions={headerActions}>
-			{/* เนื้อหาหน้า */}
-		</AdminPageLayout>
-	);
-}
-```
-
-### การใช้ spacing และ layout มาตรฐาน
-
-- ใช้ `p-6 space-y-6` สำหรับ container หลัก
-- ใช้ `grid gap-6 md:grid-cols-X` สำหรับการจัดเรียง cards
-- ใช้ theme-aware classes: `bg-card`, `text-foreground`, `border-border`
 
 ## การแก้ปัญหา
 
