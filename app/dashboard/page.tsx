@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
 	Truck,
 	Users,
@@ -15,6 +16,15 @@ import {
 	Wrench,
 	TrendingUp,
 	Building,
+	Target,
+	BarChart3,
+	PieChart,
+	User,
+	UserX,
+	CalendarDays,
+	ArrowUp,
+	ArrowDown,
+	Star,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -78,6 +88,363 @@ export default function DashboardPage() {
 					</CardContent>
 				</Card>
 			</div>
+
+			<div className="grid gap-6 md:grid-cols-3">
+				{/* สถานะรถโม่ตามโรงงาน */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<Factory className="h-5 w-5" />
+							รถโม่จดทะเบียนตามโรงงาน
+						</CardTitle>
+						<CardDescription>การกระจายรถโม่ในแต่ละโรงงาน</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<div className="space-y-3">
+							<div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+								<div>
+									<div className="font-medium text-blue-900">โรงงานปูนเซ็นทรัล</div>
+									<div className="text-sm text-blue-600">8 คัน พร้อมใช้งาน</div>
+								</div>
+								<div className="text-right">
+									<div className="text-lg font-bold text-blue-600">8/10</div>
+									<Progress value={80} className="h-2 w-16" />
+								</div>
+							</div>
+
+							<div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+								<div>
+									<div className="font-medium text-green-900">โรงงานปูนไทยยามาโต</div>
+									<div className="text-sm text-green-600">7 คัน พร้อมใช้งาน</div>
+								</div>
+								<div className="text-right">
+									<div className="text-lg font-bold text-green-600">7/8</div>
+									<Progress value={87.5} className="h-2 w-16" />
+								</div>
+							</div>
+
+							<div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+								<div>
+									<div className="font-medium text-orange-900">โรงงานปูนหนองแสง</div>
+									<div className="text-sm text-orange-600">5 คัน พร้อมใช้งาน</div>
+								</div>
+								<div className="text-right">
+									<div className="text-lg font-bold text-orange-600">5/6</div>
+									<Progress value={83.3} className="h-2 w-16" />
+								</div>
+							</div>
+						</div>
+
+						<div className="pt-3 border-t">
+							<div className="text-sm text-muted-foreground">
+								รวมทั้งหมด: <span className="font-medium">20/24 คัน พร้อมใช้งาน</span>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
+
+				{/* สถานะรถโม่วันนี้-พรุ่งนี้ */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<Calendar className="h-5 w-5" />
+							สถานะรถโม่ 2 วัน
+						</CardTitle>
+						<CardDescription>สถานการณ์วันนี้และพรุ่งนี้</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Tabs defaultValue="today" className="w-full">
+							<TabsList className="grid w-full grid-cols-2">
+								<TabsTrigger value="today">วันนี้</TabsTrigger>
+								<TabsTrigger value="tomorrow">พรุ่งนี้</TabsTrigger>
+							</TabsList>
+
+							<TabsContent value="today" className="space-y-3 mt-4">
+								<div className="grid grid-cols-3 gap-2 text-center">
+									<div className="p-2 bg-green-50 rounded">
+										<CheckCircle className="h-4 w-4 mx-auto mb-1 text-green-600" />
+										<div className="text-lg font-bold text-green-600">20</div>
+										<div className="text-xs text-green-700">พร้อมใช้</div>
+									</div>
+									<div className="p-2 bg-orange-50 rounded">
+										<Wrench className="h-4 w-4 mx-auto mb-1 text-orange-600" />
+										<div className="text-lg font-bold text-orange-600">3</div>
+										<div className="text-xs text-orange-700">ซ่อมบำรุง</div>
+									</div>
+									<div className="p-2 bg-red-50 rounded">
+										<AlertTriangle className="h-4 w-4 mx-auto mb-1 text-red-600" />
+										<div className="text-lg font-bold text-red-600">1</div>
+										<div className="text-xs text-red-700">เสียหาย</div>
+									</div>
+								</div>
+
+								<div className="space-y-2 text-sm">
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+										<span>รถโม่-001, 003, 007: กำลังขนส่ง</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+										<span>รถโม่-012: ซ่อมเครื่องยนต์</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-red-500 rounded-full"></div>
+										<span>รถโม่-021: อุบัติเหตุ รอซ่อม</span>
+									</div>
+								</div>
+							</TabsContent>
+
+							<TabsContent value="tomorrow" className="space-y-3 mt-4">
+								<div className="grid grid-cols-3 gap-2 text-center">
+									<div className="p-2 bg-green-50 rounded">
+										<CheckCircle className="h-4 w-4 mx-auto mb-1 text-green-600" />
+										<div className="text-lg font-bold text-green-600">22</div>
+										<div className="text-xs text-green-700">พร้อมใช้</div>
+									</div>
+									<div className="p-2 bg-orange-50 rounded">
+										<Wrench className="h-4 w-4 mx-auto mb-1 text-orange-600" />
+										<div className="text-lg font-bold text-orange-600">2</div>
+										<div className="text-xs text-orange-700">ซ่อมบำรุง</div>
+									</div>
+									<div className="p-2 bg-red-50 rounded">
+										<AlertTriangle className="h-4 w-4 mx-auto mb-1 text-red-600" />
+										<div className="text-lg font-bold text-red-600">0</div>
+										<div className="text-xs text-red-700">เสียหาย</div>
+									</div>
+								</div>
+
+								<div className="space-y-2 text-sm">
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+										<span>รถโม่-012: เสร็จสิ้นการซ่อม</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-green-500 rounded-full"></div>
+										<span>รถโม่-021: คาดว่าซ่อมเสร็จ</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+										<span>รถโม่-005, 018: ซ่อมบำรุงประจำ</span>
+									</div>
+								</div>
+							</TabsContent>
+						</Tabs>
+					</CardContent>
+				</Card>
+
+				{/* สถานะพนักงานวันนี้-พรุ่งนี้ */}
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<Users className="h-5 w-5" />
+							สถานะพนักงาน 2 วัน
+						</CardTitle>
+						<CardDescription>การเข้างานและการลาของพนักงาน</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<Tabs defaultValue="today" className="w-full">
+							<TabsList className="grid w-full grid-cols-2">
+								<TabsTrigger value="today">วันนี้</TabsTrigger>
+								<TabsTrigger value="tomorrow">พรุ่งนี้</TabsTrigger>
+							</TabsList>
+
+							<TabsContent value="today" className="space-y-3 mt-4">
+								<div className="grid grid-cols-2 gap-3">
+									<div className="p-3 bg-green-50 rounded-lg text-center">
+										<UserCheck className="h-5 w-5 mx-auto mb-1 text-green-600" />
+										<div className="text-xl font-bold text-green-600">35</div>
+										<div className="text-xs text-green-700">เข้างานแล้ว</div>
+									</div>
+									<div className="p-3 bg-red-50 rounded-lg text-center">
+										<UserX className="h-5 w-5 mx-auto mb-1 text-red-600" />
+										<div className="text-xl font-bold text-red-600">5</div>
+										<div className="text-xs text-red-700">ลาวันนี้</div>
+									</div>
+								</div>
+
+								<div className="space-y-2 text-sm">
+									<div className="flex justify-between">
+										<span>พนักงานขับรถ:</span>
+										<span>18/20 คน</span>
+									</div>
+									<div className="flex justify-between">
+										<span>พนักงานโรงงาน:</span>
+										<span>12/15 คน</span>
+									</div>
+									<div className="flex justify-between">
+										<span>พนักงานบริหาร:</span>
+										<span>5/5 คน</span>
+									</div>
+								</div>
+
+								<div className="pt-2 border-t">
+									<div className="text-xs text-muted-foreground">
+										<div>• ลาป่วย: 3 คน</div>
+										<div>• ลากิจ: 2 คน</div>
+									</div>
+								</div>
+							</TabsContent>
+
+							<TabsContent value="tomorrow" className="space-y-3 mt-4">
+								<div className="grid grid-cols-2 gap-3">
+									<div className="p-3 bg-green-50 rounded-lg text-center">
+										<UserCheck className="h-5 w-5 mx-auto mb-1 text-green-600" />
+										<div className="text-xl font-bold text-green-600">38</div>
+										<div className="text-xs text-green-700">คาดว่าเข้างาน</div>
+									</div>
+									<div className="p-3 bg-orange-50 rounded-lg text-center">
+										<CalendarDays className="h-5 w-5 mx-auto mb-1 text-orange-600" />
+										<div className="text-xl font-bold text-orange-600">2</div>
+										<div className="text-xs text-orange-700">ลาล่วงหน้า</div>
+									</div>
+								</div>
+
+								<div className="space-y-2 text-sm">
+									<div className="flex justify-between">
+										<span>พนักงานขับรถ:</span>
+										<span>20/20 คน</span>
+									</div>
+									<div className="flex justify-between">
+										<span>พนักงานโรงงาน:</span>
+										<span>13/15 คน</span>
+									</div>
+									<div className="flex justify-between">
+										<span>พนักงานบริหาร:</span>
+										<span>5/5 คน</span>
+									</div>
+								</div>
+
+								<div className="pt-2 border-t">
+									<div className="text-xs text-muted-foreground">
+										<div>• ลากิจ: 2 คน (วันหยุดส่วนตัว)</div>
+									</div>
+								</div>
+							</TabsContent>
+						</Tabs>
+					</CardContent>
+				</Card>
+			</div>
+
+			{/* เป้าหมายแต่ละโรงงาน */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="flex items-center gap-2">
+						<Target className="h-5 w-5" />
+						เป้าหมายการส่งปูนรายโรงงาน (เดือนนี้)
+					</CardTitle>
+					<CardDescription>ความคืบหน้าเป้าหมายแต่ละโรงงานในเดือนปัจจุบัน</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+						{/* โรงงานปูนเซ็นทรัล */}
+						<div className="space-y-4">
+							<div className="flex items-center justify-between">
+								<h4 className="font-medium">โรงงานปูนเซ็นทรัล</h4>
+								<Badge variant="secondary" className="bg-blue-100 text-blue-700">
+									85%
+								</Badge>
+							</div>
+							<div className="space-y-2">
+								<div className="flex justify-between text-sm">
+									<span>เป้าหมาย:</span>
+									<span>2,000 ลบ.ม.</span>
+								</div>
+								<div className="flex justify-between text-sm">
+									<span>ส่งแล้ว:</span>
+									<span className="font-medium text-blue-600">1,700 ลบ.ม.</span>
+								</div>
+								<Progress value={85} className="h-2" />
+								<div className="flex items-center gap-2 text-sm">
+									<ArrowUp className="h-3 w-3 text-green-500" />
+									<span className="text-green-600">+12% จากเดือนที่แล้ว</span>
+								</div>
+							</div>
+							<div className="text-xs text-muted-foreground space-y-1">
+								<div>• เที่ยววิ่ง: 145/170</div>
+								<div>• เฉลี่ยต่อวัน: 68 ลบ.ม.</div>
+								<div>• คาดการณ์: เกินเป้า 8%</div>
+							</div>
+						</div>
+
+						{/* โรงงานปูนไทยยามาโต */}
+						<div className="space-y-4">
+							<div className="flex items-center justify-between">
+								<h4 className="font-medium">โรงงานปูนไทยยามาโต</h4>
+								<Badge variant="secondary" className="bg-green-100 text-green-700">
+									92%
+								</Badge>
+							</div>
+							<div className="space-y-2">
+								<div className="flex justify-between text-sm">
+									<span>เป้าหมาย:</span>
+									<span>1,500 ลบ.ม.</span>
+								</div>
+								<div className="flex justify-between text-sm">
+									<span>ส่งแล้ว:</span>
+									<span className="font-medium text-green-600">1,380 ลบ.ม.</span>
+								</div>
+								<Progress value={92} className="h-2" />
+								<div className="flex items-center gap-2 text-sm">
+									<ArrowUp className="h-3 w-3 text-green-500" />
+									<span className="text-green-600">+18% จากเดือนที่แล้ว</span>
+								</div>
+							</div>
+							<div className="text-xs text-muted-foreground space-y-1">
+								<div>• เที่ยววิ่ง: 118/130</div>
+								<div>• เฉลี่ยต่อวัน: 55 ลบ.ม.</div>
+								<div>• คาดการณ์: เกินเป้า 5%</div>
+							</div>
+						</div>
+
+						{/* โรงงานปูนหนองแสง */}
+						<div className="space-y-4">
+							<div className="flex items-center justify-between">
+								<h4 className="font-medium">โรงงานปูนหนองแสง</h4>
+								<Badge variant="destructive" className="bg-red-100 text-red-700">
+									72%
+								</Badge>
+							</div>
+							<div className="space-y-2">
+								<div className="flex justify-between text-sm">
+									<span>เป้าหมาย:</span>
+									<span>1,200 ลบ.ม.</span>
+								</div>
+								<div className="flex justify-between text-sm">
+									<span>ส่งแล้ว:</span>
+									<span className="font-medium text-red-600">864 ลบ.ม.</span>
+								</div>
+								<Progress value={72} className="h-2" />
+								<div className="flex items-center gap-2 text-sm">
+									<ArrowDown className="h-3 w-3 text-red-500" />
+									<span className="text-red-600">-5% จากเดือนที่แล้ว</span>
+								</div>
+							</div>
+							<div className="text-xs text-muted-foreground space-y-1">
+								<div>• เที่ยววิ่ง: 78/110</div>
+								<div>• เฉลี่ยต่อวัน: 34 ลบ.ม.</div>
+								<div>• คาดการณ์: ต่ำกว่าเป้า 15%</div>
+							</div>
+						</div>
+					</div>
+
+					<div className="mt-6 pt-4 border-t">
+						<div className="grid grid-cols-3 gap-4 text-center">
+							<div>
+								<div className="text-2xl font-bold text-blue-600">4,700</div>
+								<div className="text-sm text-muted-foreground">รวมเป้าหมาย (ลบ.ม.)</div>
+							</div>
+							<div>
+								<div className="text-2xl font-bold text-green-600">3,944</div>
+								<div className="text-sm text-muted-foreground">ส่งแล้ว (ลบ.ม.)</div>
+							</div>
+							<div>
+								<div className="text-2xl font-bold text-orange-600">84%</div>
+								<div className="text-sm text-muted-foreground">เฉลี่ยรวม</div>
+							</div>
+						</div>
+					</div>
+				</CardContent>
+			</Card>
 
 			<div className="grid gap-6 md:grid-cols-3">
 				{/* สถานะรถโม่ */}
@@ -151,6 +518,9 @@ export default function DashboardPage() {
 								<div className="space-y-1">
 									<p className="text-sm font-medium">รถโม่-007 ส่งปูนเสร็จสิ้น</p>
 									<p className="text-xs text-muted-foreground">โครงการก่อสร้างตึก ABC - 09:45</p>
+									<Badge variant="secondary" className="text-xs">
+										95 ลบ.ม. | โรงงานเซ็นทรัล
+									</Badge>
 								</div>
 							</div>
 
@@ -161,6 +531,9 @@ export default function DashboardPage() {
 									<p className="text-xs text-muted-foreground">
 										คุณสมศักดิ์ ตำแหน่งคนขับรถ - 08:30
 									</p>
+									<Badge variant="outline" className="text-xs">
+										ทีมขับรถโม่
+									</Badge>
 								</div>
 							</div>
 
@@ -169,6 +542,9 @@ export default function DashboardPage() {
 								<div className="space-y-1">
 									<p className="text-sm font-medium">รถโม่-012 เข้าซ่อมบำรุง</p>
 									<p className="text-xs text-muted-foreground">ตรวจเช็คประจำเดือน - 07:15</p>
+									<Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700">
+										คาดเสร็จ: พรุ่งนี้
+									</Badge>
 								</div>
 							</div>
 
@@ -177,6 +553,9 @@ export default function DashboardPage() {
 								<div className="space-y-1">
 									<p className="text-sm font-medium">ได้รับคำสั่งซื้อใหม่</p>
 									<p className="text-xs text-muted-foreground">บริษัท XYZ จำกัด - 06:45</p>
+									<Badge variant="secondary" className="text-xs">
+										250 ลบ.ม. | ต่อสัปดาห์
+									</Badge>
 								</div>
 							</div>
 
@@ -185,6 +564,23 @@ export default function DashboardPage() {
 								<div className="space-y-1">
 									<p className="text-sm font-medium">แจ้งเตือนเชื้อเพลิงน้อย</p>
 									<p className="text-xs text-muted-foreground">รถโม่-009 ระดับน้ำมัน 15% - 06:20</p>
+									<Badge variant="destructive" className="text-xs">
+										ต้องเติมน้ำมันด่วน
+									</Badge>
+								</div>
+							</div>
+
+							<div className="flex items-start gap-3">
+								<div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+								<div className="space-y-1">
+									<p className="text-sm font-medium">ลูกค้าให้คะแนนความพึงพอใจ</p>
+									<p className="text-xs text-muted-foreground">โครงการคอนโดมิเนียม ABC - 05:30</p>
+									<div className="flex items-center gap-1">
+										<Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-700">
+											<Star className="h-3 w-3 mr-1" />
+											4.8/5.0
+										</Badge>
+									</div>
 								</div>
 							</div>
 						</div>

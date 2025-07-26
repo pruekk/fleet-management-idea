@@ -26,7 +26,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash2, Receipt, Calculator, DollarSign } from "lucide-react";
+import { Plus, Edit, Trash2, Receipt, Calculator, DollarSign, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function BillingPage() {
@@ -34,18 +34,25 @@ export default function BillingPage() {
 		{
 			id: 1,
 			customerName: "บริษัท ก่อสร้าง ABC จำกัด",
-			tripsPerPlant: 45,
-			yokCount: 12,
-			tenantFee: 15000,
-			difference: 2500,
-			rebateFee: 800,
-			redSign: 1200,
-			livingCost: 3500,
+			year: 2024,
+			month: "กรกฎาคม",
+			tripsPerPlant: 45, // จำนวนเที่ยวแต่ละแพล้น
+			totalTrips: 138, // จำนวนเที่ยว
+			totalQueues: 25, // จำนวนคิว
+			yokCount: 12, // จำนวนโยก
+			yokFee: 8400, // ค่าโยกรถ
+			tenantFee: 15000, // ค่าเทนาน
+			difference: 2500, // ส่วนต่าง
+			rebateFee: 800, // ค่าRebate
+			redSign: 1200, // ป้ายแดง
+			livingCost: 3500, // ค่าครองชีพ
+			penaltyFee: 500, // ค่าปรับ
+			concreteInsurance: 2100, // ค่าประกันรถคอนกรีต
+			totalIncome: 71020, // รวมรายได้
 			subtotal: 67000,
 			vat: 4690,
 			withholdingTax: 670,
-			totalBilling: 71020,
-			month: "กรกฎาคม 2024",
+			totalBilling: 71020, // สรุปยอดเรียกเก็บเงินลูกค้า
 		},
 		{
 			id: 2,
@@ -73,13 +80,13 @@ export default function BillingPage() {
 	const averageBillingPerTrip = totalTrips > 0 ? totalBilling / totalTrips : 0;
 
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-3xl font-bold">การวางบิล</h1>
+		<div className="p-6 space-y-6">
+			<div className="flex justify-between items-center">
+				<h1 className="text-3xl font-bold text-foreground">วางบิล</h1>
 				<Dialog>
 					<DialogTrigger asChild>
-						<Button>
-							<Plus className="mr-2 h-4 w-4" />
+						<Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+							<Plus className="w-4 h-4 mr-2" />
 							สร้างบิลใหม่
 						</Button>
 					</DialogTrigger>
@@ -117,7 +124,35 @@ export default function BillingPage() {
 								</div>
 							</div>
 
-							<div className="grid grid-cols-3 gap-4">
+							<div className="grid grid-cols-2 gap-4">
+								<div className="space-y-2">
+									<Label htmlFor="year">ปี</Label>
+									<Input id="year" type="number" placeholder="เช่น 2024" />
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="month">เดือน</Label>
+									<Select>
+										<SelectTrigger>
+											<SelectValue placeholder="เลือกเดือน" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="กรกฎาคม">กรกฎาคม</SelectItem>
+											<SelectItem value="มิถุนายน">มิถุนายน</SelectItem>
+											<SelectItem value="พฤษภาคม">พฤษภาคม</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+							</div>
+
+							<div className="grid grid-cols-4 gap-4">
+								<div className="space-y-2">
+									<Label htmlFor="totalTrips">จำนวนเที่ยว</Label>
+									<Input id="totalTrips" type="number" placeholder="เช่น 138" />
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="totalQueues">จำนวนคิว</Label>
+									<Input id="totalQueues" type="number" placeholder="เช่น 25" />
+								</div>
 								<div className="space-y-2">
 									<Label htmlFor="tripsPerPlant">จำนวนเที่ยวแต่ละแพล้น</Label>
 									<Input id="tripsPerPlant" type="number" placeholder="เช่น 45" />
@@ -126,9 +161,24 @@ export default function BillingPage() {
 									<Label htmlFor="yokCount">จำนวนโยก</Label>
 									<Input id="yokCount" type="number" placeholder="เช่น 12" />
 								</div>
+							</div>
+
+							<div className="grid grid-cols-4 gap-4">
+								<div className="space-y-2">
+									<Label htmlFor="yokFee">ค่าโยกรถ (บาท)</Label>
+									<Input id="yokFee" type="number" placeholder="เช่น 8400" />
+								</div>
 								<div className="space-y-2">
 									<Label htmlFor="tenantFee">ค่าเทนาน (บาท)</Label>
 									<Input id="tenantFee" type="number" placeholder="เช่น 15000" />
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="penaltyFee">ค่าปรับ (บาท)</Label>
+									<Input id="penaltyFee" type="number" placeholder="เช่น 500" />
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="concreteInsurance">ค่าประกันรถคอนกรีต (บาท)</Label>
+									<Input id="concreteInsurance" type="number" placeholder="เช่น 2100" />
 								</div>
 							</div>
 
@@ -195,6 +245,26 @@ export default function BillingPage() {
 				</Dialog>
 			</div>
 
+			<Card className="bg-card border-border">
+				<CardHeader>
+					<CardTitle className="text-card-foreground">ค้นหาบิล</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="flex gap-4">
+						<div className="relative flex-1">
+							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+							<Input
+								placeholder="ค้นหาชื่อลูกค้า หรือเดือน..."
+								className="pl-10 bg-background border-input"
+							/>
+						</div>
+						<Button variant="outline" className="border-input">
+							ค้นหา
+						</Button>
+					</div>
+				</CardContent>
+			</Card>
+
 			{/* สถิติภาพรวม */}
 			<div className="grid gap-4 md:grid-cols-4">
 				<Card>
@@ -240,9 +310,12 @@ export default function BillingPage() {
 			</div>
 
 			{/* ตารางบิล */}
-			<Card>
+			<Card className="bg-card border-border">
 				<CardHeader>
-					<CardTitle>รายการบิลลูกค้า</CardTitle>
+					<CardTitle className="text-card-foreground flex items-center gap-2">
+						<Receipt className="w-5 h-5" />
+						รายการบิลลูกค้า
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Table>
