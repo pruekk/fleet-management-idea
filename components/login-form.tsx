@@ -132,14 +132,6 @@ export function LoginForm() {
 					<Button variant="link" className="p-0 h-auto">
 						ติดต่อผู้ดูแลระบบ
 					</Button>
-					<div className="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-blue-800 text-xs">
-						<strong>สำหรับการทดสอบ:</strong>
-						<br />
-						<strong>Email:</strong> admin@company.com, hr@company.com, finance@company.com,
-						ops@company.com
-						<br />
-						<strong>Password:</strong> ใดๆ ก็ได้
-					</div>
 				</div>
 			</CardContent>
 		</Card>

@@ -26,7 +26,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash2, Fuel, TrendingUp } from "lucide-react";
+import { Plus, Edit, Trash2, Fuel, TrendingUp, Search } from "lucide-react";
 import { useState } from "react";
 
 export default function FuelPage() {
@@ -34,14 +34,16 @@ export default function FuelPage() {
 		{
 			id: 1,
 			date: "2024-07-25",
-			truckCode: "A201",
-			plateNumber: "83-5947",
+			truckCode: "A201", // รหัสรถโม่
+			plateNumber: "83-5947", // ชื่อรถโม่
 			driverName: "นายสมชาย",
 			gasStation: "ปั้มบางจาก สาขาลาดพร้าว",
+			plant: "แพล้น A", // แพล้น
 			liters: 120.5,
 			pricePerLiter: 32.5,
 			totalAmount: 3916.25,
 			month: "กรกฎาคม 2024",
+			freeItems: { water: 2 }, // ของแถม (น้ำ กี่แพค)
 		},
 		{
 			id: 2,
@@ -50,10 +52,12 @@ export default function FuelPage() {
 			plateNumber: "83-5948",
 			driverName: "นายสมศักดิ์",
 			gasStation: "ปั้มบางจาก สาขาวิภาวดี",
+			plant: "แพล้น A",
 			liters: 115.0,
 			pricePerLiter: 32.5,
 			totalAmount: 3737.5,
 			month: "กรกฎาคม 2024",
+			freeItems: { water: 1 },
 		},
 		{
 			id: 3,
@@ -62,12 +66,36 @@ export default function FuelPage() {
 			plateNumber: "83-5949",
 			driverName: "นายสมปอง",
 			gasStation: "ปั้มเชลล์ สาขารังสิต",
+			plant: "แพล้น B",
 			liters: 108.0,
 			pricePerLiter: 32.8,
 			totalAmount: 3542.4,
 			month: "กรกฎาคม 2024",
+			freeItems: { water: 3 },
 		},
 	]);
+
+	// ข้อมูลการจ่ายเงินคิวมิกซ์
+	const queueMixPayments = [
+		{
+			id: 1,
+			truckCode: "A201",
+			plateNumber: "83-5947",
+			balanceForward: 5000, // ยอดยกมา
+			balanceCarryForward: 1500, // ยอดยกไป
+			currentMonthPayment: 12000, // ยอดจ่ายเดือนนี้
+			fuelRefund: 800, // เงินคืนน้ำมัน
+		},
+		{
+			id: 2,
+			truckCode: "A202",
+			plateNumber: "83-5948",
+			balanceForward: 3500,
+			balanceCarryForward: 2100,
+			currentMonthPayment: 9800,
+			fuelRefund: 650,
+		},
+	];
 
 	// คำนวณสถิติ
 	const totalLiters = fuelData.reduce((sum, item) => sum + item.liters, 0);
@@ -99,13 +127,13 @@ export default function FuelPage() {
 	}, {} as Record<string, { totalLiters: number; totalCost: number; count: number }>);
 
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
-				<h1 className="text-3xl font-bold">การจัดการน้ำมัน</h1>
+		<div className="p-6 space-y-6">
+			<div className="flex justify-between items-center">
+				<h1 className="text-3xl font-bold text-foreground">น้ำมัน</h1>
 				<Dialog>
 					<DialogTrigger asChild>
-						<Button>
-							<Plus className="mr-2 h-4 w-4" />
+						<Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+							<Plus className="w-4 h-4 mr-2" />
 							เพิ่มข้อมูลน้ำมัน
 						</Button>
 					</DialogTrigger>
@@ -191,6 +219,26 @@ export default function FuelPage() {
 				</Dialog>
 			</div>
 
+			<Card className="bg-card border-border">
+				<CardHeader>
+					<CardTitle className="text-card-foreground">ค้นหาข้อมูลน้ำมัน</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className="flex gap-4">
+						<div className="relative flex-1">
+							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+							<Input
+								placeholder="ค้นหาทะเบียนรถ รหัสรถ หรือปั้มน้ำมัน..."
+								className="pl-10 bg-background border-input"
+							/>
+						</div>
+						<Button variant="outline" className="border-input">
+							ค้นหา
+						</Button>
+					</div>
+				</CardContent>
+			</Card>
+
 			{/* สถิติภาพรวม */}
 			<div className="grid gap-4 md:grid-cols-3">
 				<Card>
@@ -226,9 +274,12 @@ export default function FuelPage() {
 			</div>
 
 			{/* ตารางข้อมูลน้ำมัน */}
-			<Card>
+			<Card className="bg-card border-border">
 				<CardHeader>
-					<CardTitle>รายการการเติมน้ำมัน</CardTitle>
+					<CardTitle className="text-card-foreground flex items-center gap-2">
+						<Fuel className="w-5 h-5" />
+						รายการการเติมน้ำมัน
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Table>

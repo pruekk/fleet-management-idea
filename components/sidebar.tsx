@@ -31,10 +31,14 @@ import {
 	UserCog,
 	Cog,
 	Building,
-	FileCheck,
 	Calculator,
 	TrendingUp,
 	UserPlus,
+	PieChart,
+	TrendingDown,
+	FolderOpen,
+	FileUp,
+	ClipboardList,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -58,85 +62,26 @@ const menuItems: MenuItem[] = [
 		icon: Home,
 	},
 	{
-		title: "ข้อมูลพื้นฐาน",
-		icon: Package,
+		title: "ภาพรวม",
+		icon: PieChart,
+		roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
 		children: [
 			{
-				title: "บริษัท",
-				href: "/basic-data/companies",
-				icon: Building,
+				title: "สรุปผล",
+				href: "/overview/summary",
+				icon: BarChart3,
+				roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
 			},
 			{
-				title: "พนักงาน",
-				href: "/basic-data/employees",
-				icon: Users,
-			},
-			{
-				title: "รถโม่",
-				href: "/basic-data/trucks",
-				icon: Truck,
-			},
-			{
-				title: "ขนส่ง",
-				href: "/basic-data/transport",
-				icon: Truck,
-			},
-		],
-	},
-	{
-		title: "ลูกค้า",
-		icon: Users,
-		children: [
-			{
-				title: "รายชื่อลูกค้า",
-				href: "/customers",
-				icon: Users,
-			},
-			{
-				title: "โรงงาน",
-				href: "/customers/factories",
-				icon: Factory,
-			},
-			{
-				title: "ใบเสนอราคา",
-				href: "/customers/quotations",
-				icon: FileText,
-			},
-		],
-	},
-	{
-		title: "ซัพพลายเออร์",
-		href: "/suppliers",
-		icon: Building2,
-	},
-	{
-		title: "พนักงาน",
-		icon: Users,
-		children: [
-			{
-				title: "ข้อมูลพื้นฐาน",
-				href: "/employees/basic-info",
-				icon: UserPlus,
-			},
-			{
-				title: "รายได้ประจำเดือน",
-				href: "/employees/monthly-income",
-				icon: DollarSign,
-			},
-			{
-				title: "รายได้ประจำปี",
-				href: "/employees/annual-income",
+				title: "GPM",
+				href: "/overview/gpm",
 				icon: TrendingUp,
-			},
-			{
-				title: "จัดการภาษี",
-				href: "/employees/tax-management",
-				icon: Calculator,
+				roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
 			},
 		],
 	},
 	{
-		title: "ปฏิบัติการรายเดือน",
+		title: "บริการขนส่งคอนกรีต",
 		icon: Calendar,
 		children: [
 			{
@@ -160,47 +105,11 @@ const menuItems: MenuItem[] = [
 				icon: Wrench,
 			},
 			{
-				title: "พนักงาน",
-				href: "/monthly-operations/employees",
-				icon: Users,
-			},
-			{
 				title: "Excel Templates",
 				href: "/monthly-operations/excel-templates",
 				icon: FileSpreadsheet,
 			},
 		],
-	},
-	{
-		title: "บริษัท",
-		icon: Building,
-		children: [
-			{
-				title: "รายได้บริษัท",
-				href: "/company/income",
-				icon: DollarSign,
-			},
-			{
-				title: "รายจ่ายบริษัท",
-				href: "/company/expenses",
-				icon: DollarSign,
-			},
-			{
-				title: "ตั้งค่าบริษัท",
-				href: "/company/settings",
-				icon: FileCheck,
-			},
-		],
-	},
-	{
-		title: "รายงาน",
-		href: "/reports",
-		icon: BarChart3,
-	},
-	{
-		title: "GPM",
-		href: "/gpm",
-		icon: BarChart3,
 	},
 	{
 		title: "LINE OA",
@@ -229,6 +138,69 @@ const menuItems: MenuItem[] = [
 		],
 	},
 	{
+		title: "บุคคลากร",
+		icon: Users,
+		children: [
+			{
+				title: "ข้อมูลพื้นฐาน",
+				href: "/employees/basic-info",
+				icon: UserPlus,
+			},
+			{
+				title: "ประเมินพนักงาน",
+				href: "/employees/evaluation",
+				icon: CheckSquare,
+			},
+			{
+				title: "รายได้ประจำเดือน",
+				href: "/employees/monthly-income",
+				icon: DollarSign,
+			},
+			{
+				title: "รายได้ประจำปี",
+				href: "/employees/annual-income",
+				icon: TrendingUp,
+			},
+			{
+				title: "จัดการภาษี",
+				href: "/employees/tax-management",
+				icon: Calculator,
+			},
+		],
+	},
+	{
+		title: "การเงิน",
+		icon: DollarSign,
+		children: [
+			{
+				title: "ใบเสนอราคา",
+				href: "/finance/quotations",
+				icon: FileText,
+			},
+			{
+				title: "อนุมัติการโอน",
+				href: "/finance/transfer-approval",
+				icon: CheckSquare,
+			},
+		],
+	},
+	{
+		title: "บัญชี",
+		icon: Calculator,
+		children: [
+			{
+				title: "รายได้",
+				href: "/accounting/income",
+				icon: DollarSign,
+			},
+			{
+				title: "รายจ่าย",
+				href: "/accounting/expenses",
+				icon: Receipt,
+			},
+		],
+	},
+	{
 		title: "การแจ้งเตือน",
 		href: "/notifications",
 		icon: Bell,
@@ -237,6 +209,85 @@ const menuItems: MenuItem[] = [
 		title: "ระบบอนุมัติ",
 		href: "/approval-system",
 		icon: CheckSquare,
+	},
+	{
+		title: "รายงาน",
+		icon: BarChart3,
+		children: [
+			{
+				title: "รายงานทั่วไป",
+				href: "/reports/general",
+				icon: ClipboardList,
+			},
+			{
+				title: "รายงานผู้บริหาร",
+				href: "/reports/executive",
+				icon: TrendingUp,
+				roles: ["ฝ่ายบริหาร", "ผู้ดูแลระบบ"],
+			},
+		],
+	},
+	{
+		title: "ข้อมูลพื้นฐาน",
+		icon: Package,
+		children: [
+			{
+				title: "รถโม่",
+				href: "/basic-data/trucks",
+				icon: Truck,
+			},
+			{
+				title: "บริษัท",
+				href: "/basic-data/companies",
+				icon: Building,
+			},
+			{
+				title: "ลูกค้า",
+				href: "/basic-data/customers",
+				icon: Users,
+			},
+			{
+				title: "โรงงาน",
+				href: "/basic-data/factories",
+				icon: Factory,
+			},
+			{
+				title: "ซัพพลายเออร์",
+				href: "/basic-data/suppliers",
+				icon: Building2,
+			},
+		],
+	},
+	{
+		title: "แบบฟอร์ม",
+		icon: FolderOpen,
+		children: [
+			{
+				title: "ฝ่ายขนส่ง",
+				href: "/forms/transport",
+				icon: Truck,
+			},
+			{
+				title: "ฝ่ายบุคคล",
+				href: "/forms/hr",
+				icon: Users,
+			},
+			{
+				title: "ฝ่ายการเงิน",
+				href: "/forms/finance",
+				icon: DollarSign,
+			},
+			{
+				title: "ฝ่ายขาย",
+				href: "/forms/sales",
+				icon: Building,
+			},
+			{
+				title: "อัพโหลดฟอร์ม",
+				href: "/forms/upload",
+				icon: FileUp,
+			},
+		],
 	},
 	{
 		title: "ตั้งค่าระบบ",

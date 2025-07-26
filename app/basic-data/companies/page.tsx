@@ -1,129 +1,251 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Building, Plus, Search, MapPin, Phone } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building, CreditCard, FileText, FolderOpen } from "lucide-react";
 
 export default function BasicDataCompaniesPage() {
 	return (
 		<div className="p-6 space-y-6">
-			<div className="flex items-center justify-between">
-				<div>
-					<h1 className="text-3xl font-bold">จัดการข้อมูลบริษัท</h1>
-					<p className="text-muted-foreground">ข้อมูลบริษัทและสาขาต่างๆ</p>
-				</div>
-				<Button>
-					<Plus className="h-4 w-4 mr-2" />
-					เพิ่มบริษัทใหม่
-				</Button>
+			<div>
+				<h1 className="text-3xl font-bold text-gray-900">ตั้งค่าบริษัท</h1>
+				<p className="text-gray-600">จัดการข้อมูลบริษัทในรูปแบบนิติบุคคล</p>
 			</div>
 
-			<div className="grid gap-6 md:grid-cols-3">
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">บริษัทในเครือ</CardTitle>
-						<Building className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">3</div>
-						<p className="text-xs text-muted-foreground">บริษัทหลัก + สาขา</p>
-					</CardContent>
-				</Card>
+			<Tabs defaultValue="company-info" className="space-y-4">
+				<TabsList className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+					<TabsTrigger value="company-info">ข้อมูลบริษัท</TabsTrigger>
+					<TabsTrigger value="bank-info">ข้อมูลธนาคาร</TabsTrigger>
+					<TabsTrigger value="licenses">ใบอนุญาต</TabsTrigger>
+					<TabsTrigger value="documents">เอกสาร</TabsTrigger>
+				</TabsList>
 
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">สาขาที่ใช้งาน</CardTitle>
-						<MapPin className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">8</div>
-						<p className="text-xs text-muted-foreground">สาขาในพื้นที่</p>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">ข้อมูลล่าสุด</CardTitle>
-						<Phone className="h-4 w-4 text-muted-foreground" />
-					</CardHeader>
-					<CardContent>
-						<div className="text-2xl font-bold">วันนี้</div>
-						<p className="text-xs text-muted-foreground">อัปเดตล่าสุด</p>
-					</CardContent>
-				</Card>
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>รายชื่อบริษัท</CardTitle>
-					<CardDescription>ข้อมูลบริษัทและสาขาในเครือ</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<div className="flex items-center space-x-4 mb-4">
-						<div className="relative flex-1">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-							<Input placeholder="ค้นหาบริษัท..." className="pl-10" />
-						</div>
-						<Button variant="outline">ฟิลเตอร์</Button>
-					</div>
-
-					<div className="rounded-md border">
-						<div className="grid grid-cols-5 gap-4 p-4 font-medium border-b bg-gray-50">
-							<div>ชื่อบริษัท</div>
-							<div>ประเภท</div>
-							<div>เลขประจำตัวผู้เสียภาษี</div>
-							<div>ที่อยู่</div>
-							<div>สถานะ</div>
-						</div>
-
-						{/* Sample company data */}
-						{[
-							{
-								name: "บริษัท ขนส่งโม่ปูน ABC จำกัด",
-								type: "สำนักงานใหญ่",
-								taxId: "0123456789123",
-								address: "กรุงเทพฯ",
-								status: "ใช้งาน",
-							},
-							{
-								name: "สาขาลาดพร้าว",
-								type: "สาขา",
-								taxId: "0123456789123",
-								address: "ลาดพร้าว, กรุงเทพฯ",
-								status: "ใช้งาน",
-							},
-							{
-								name: "สาขาสมุทรปราการ",
-								type: "สาขา",
-								taxId: "0123456789123",
-								address: "สมุทรปราการ",
-								status: "ใช้งาน",
-							},
-						].map((company, index) => (
-							<div key={index} className="grid grid-cols-5 gap-4 p-4 border-b last:border-b-0">
-								<div className="font-medium">{company.name}</div>
-								<div>
-									<span
-										className={`px-2 py-1 text-xs rounded-full ${
-											company.type === "สำนักงานใหญ่"
-												? "bg-blue-100 text-blue-800"
-												: "bg-gray-100 text-gray-800"
-										}`}
-									>
-										{company.type}
-									</span>
+				<TabsContent value="company-info" className="mt-2">
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<Building className="h-5 w-5" />
+								ข้อมูลบริษัท
+							</CardTitle>
+							<CardDescription>ข้อมูลทั่วไปและการจดทะเบียนของบริษัท</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div className="space-y-4">
+									<h3 className="text-lg font-semibold">ข้อมูลทั่วไป</h3>
+									<div className="space-y-3">
+										<div>
+											<Label htmlFor="company-name">ชื่อบริษัท (ไทย)</Label>
+											<Input id="company-name" defaultValue="บริษัท ขนส่งคอนกรีต จำกัด" />
+										</div>
+										<div>
+											<Label htmlFor="company-name-en">ชื่อบริษัท (อังกฤษ)</Label>
+											<Input id="company-name-en" defaultValue="Concrete Transport Co., Ltd." />
+										</div>
+										<div>
+											<Label htmlFor="tax-id">เลขประจำตัวผู้เสียภาษี</Label>
+											<Input id="tax-id" defaultValue="0123456789012" />
+										</div>
+										<div>
+											<Label htmlFor="registration-number">เลขทะเบียนบริษัท</Label>
+											<Input id="registration-number" defaultValue="0123456789012" />
+										</div>
+										<div>
+											<Label htmlFor="established-date">วันที่จดทะเบียน</Label>
+											<Input id="established-date" type="date" defaultValue="2010-01-15" />
+										</div>
+										<div>
+											<Label htmlFor="capital">ทุนจดทะเบียน</Label>
+											<Input id="capital" type="number" defaultValue="5000000" />
+										</div>
+										<div>
+											<Label htmlFor="business-type">ประเภทธุรกิจ</Label>
+											<Input id="business-type" defaultValue="ขนส่งและโลจิสติกส์" />
+										</div>
+									</div>
 								</div>
-								<div className="font-mono text-sm">{company.taxId}</div>
-								<div>{company.address}</div>
-								<div>
-									<span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-										{company.status}
-									</span>
+								<div className="space-y-4">
+									<h3 className="text-lg font-semibold">ข้อมูลติดต่อ</h3>
+									<div className="space-y-3">
+										<div>
+											<Label htmlFor="address">ที่อยู่</Label>
+											<Textarea
+												id="address"
+												defaultValue="123 ถนนสุขุมวิท แขวงคลองตัน เขตคลองตัน กรุงเทพฯ 10110"
+												className="min-h-[80px]"
+											/>
+										</div>
+										<div>
+											<Label htmlFor="phone">เบอร์โทรศัพท์</Label>
+											<Input id="phone" defaultValue="02-123-4567" />
+										</div>
+										<div>
+											<Label htmlFor="fax">เบอร์แฟกซ์</Label>
+											<Input id="fax" defaultValue="02-123-4568" />
+										</div>
+										<div>
+											<Label htmlFor="email">อีเมล</Label>
+											<Input id="email" type="email" defaultValue="info@concrete-transport.com" />
+										</div>
+										<div>
+											<Label htmlFor="website">เว็บไซต์</Label>
+											<Input id="website" defaultValue="www.concrete-transport.com" />
+										</div>
+									</div>
 								</div>
 							</div>
-						))}
-					</div>
-				</CardContent>
-			</Card>
+							<div className="mt-6 flex gap-2">
+								<Button>บันทึกข้อมูล</Button>
+								<Button variant="outline">ยกเลิก</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</TabsContent>
+
+				<TabsContent value="bank-info" className="mt-2">
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<CreditCard className="h-5 w-5" />
+								ข้อมูลธนาคาร
+							</CardTitle>
+							<CardDescription>บัญชีธนาคารของบริษัท</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<div className="space-y-3">
+									<div>
+										<Label htmlFor="bank-name">ชื่อธนาคาร</Label>
+										<Input id="bank-name" defaultValue="ธนาคารกรุงเทพ จำกัด (มหาชน)" />
+									</div>
+									<div>
+										<Label htmlFor="branch">สาขา</Label>
+										<Input id="branch" defaultValue="สาขาสุขุมวิท" />
+									</div>
+									<div>
+										<Label htmlFor="account-number">เลขที่บัญชี</Label>
+										<Input id="account-number" defaultValue="123-4-56789-0" />
+									</div>
+								</div>
+								<div className="space-y-3">
+									<div>
+										<Label htmlFor="account-name">ชื่อบัญชี</Label>
+										<Input id="account-name" defaultValue="บริษัท ขนส่งคอนกรีต จำกัด" />
+									</div>
+									<div>
+										<Label htmlFor="account-type">ประเภทบัญชี</Label>
+										<Input id="account-type" defaultValue="บัญชีออมทรัพย์" />
+									</div>
+									<div>
+										<Label htmlFor="swift-code">รหัส SWIFT</Label>
+										<Input id="swift-code" defaultValue="BKKBTHBK" />
+									</div>
+								</div>
+							</div>
+							<div className="mt-6 flex gap-2">
+								<Button>บันทึกข้อมูล</Button>
+								<Button variant="outline">ยกเลิก</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</TabsContent>
+
+				<TabsContent value="licenses" className="mt-2">
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<FileText className="h-5 w-5" />
+								ใบอนุญาต
+							</CardTitle>
+							<CardDescription>ใบอนุญาตและใบรับรองต่างๆ</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-4">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<div className="space-y-3">
+										<div>
+											<Label htmlFor="transport-license">ใบอนุญาตขนส่ง</Label>
+											<Input id="transport-license" defaultValue="ขส.001/2567" />
+										</div>
+										<div>
+											<Label htmlFor="transport-expire">วันหมดอายุ</Label>
+											<Input id="transport-expire" type="date" defaultValue="2025-12-31" />
+										</div>
+									</div>
+									<div className="space-y-3">
+										<div>
+											<Label htmlFor="business-license">ใบทะเบียนพาณิชย์</Label>
+											<Input id="business-license" defaultValue="กท.001/2567" />
+										</div>
+										<div>
+											<Label htmlFor="business-expire">วันหมดอายุ</Label>
+											<Input id="business-expire" type="date" defaultValue="2025-12-31" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="mt-6 flex gap-2">
+								<Button>บันทึกข้อมูล</Button>
+								<Button variant="outline">ยกเลิก</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</TabsContent>
+
+				<TabsContent value="documents" className="mt-2">
+					<Card>
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<FolderOpen className="h-5 w-5" />
+								เอกสาร
+							</CardTitle>
+							<CardDescription>เอกสารสำคัญของบริษัท</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="space-y-4">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<div className="space-y-3">
+										<h4 className="font-semibold">เอกสารก่อตั้งบริษัท</h4>
+										<div className="space-y-2">
+											<Button variant="outline" className="w-full justify-start">
+												หนังสือรับรองการจดทะเบียน
+											</Button>
+											<Button variant="outline" className="w-full justify-start">
+												หนังสือบริคณห์สนธิ
+											</Button>
+											<Button variant="outline" className="w-full justify-start">
+												ข้อบังคับบริษัท
+											</Button>
+										</div>
+									</div>
+									<div className="space-y-3">
+										<h4 className="font-semibold">เอกสารภาษี</h4>
+										<div className="space-y-2">
+											<Button variant="outline" className="w-full justify-start">
+												ใบทะเบียนภาษีมูลค่าเพิ่ม
+											</Button>
+											<Button variant="outline" className="w-full justify-start">
+												ใบทะเบียนภาษีเงินได้นิติบุคคล
+											</Button>
+											<Button variant="outline" className="w-full justify-start">
+												ใบทะเบียนประกันสังคม
+											</Button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div className="mt-6 flex gap-2">
+								<Button>อัปโหลดเอกสาร</Button>
+								<Button variant="outline">จัดการไฟล์</Button>
+							</div>
+						</CardContent>
+					</Card>
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }

@@ -38,14 +38,34 @@
 4. **เปิดเบราว์เซอร์**
    ไปที่ `http://localhost:3000`
 
-## โครงสร้างโปรเจค (อัปเดต 2024)
+## การใช้งานระบบ
 
-```
+### 🔐 การเข้าสู่ระบบ
+
+ระบบจำลองข้อมูลผู้ใช้สำหรับการทดสอบ:
+
+- **admin@company.com** - ผู้ดูแลระบบ + ฝ่ายบริหาร (2 บทบาท)
+- **hr@company.com** - ฝ่ายบุคลากร (1 บทบาท)
+- **finance@company.com** - ฝ่ายบัญชี/การเงิน + ฝ่ายบริหาร (2 บทบาท)
+- **ops@company.com** - ฝ่ายปฏิบัติการ + ฝ่ายซ่อมบำรุง (2 บทบาท)
+
+รหัสผ่าน: **ใดๆ ก็ได้** (สำหรับการทดสอบ)
+
+### 🔄 การสลับบทบาท
+
+- ผู้ใช้ที่มีหลายบทบาทสามารถสลับได้จาก dropdown ใน header bar
+- ผู้ใช้ที่มีบทบาทเดียวจะแสดงบทบาทแบบคงที่
+- Sidebar จะเปลี่ยนตามบทบาทที่เลือก
+- การออกจากระบบจะเคลียร์ข้อมูลบทบาททั้งหมด
+
+## โครงสร้างโปรเจค (อัปเดต 2025)
+
+```bash
 fleet-management-idea/
 ├── app/                    # หน้าเว็บแอปพลิเคชัน (App Router)
 │   ├── page.tsx           # หน้าแรก (redirect ไป /login)
 │   ├── login/             # หน้าเข้าสู่ระบบ
-│   ├── dashboard/         # หน้าแดชบอร์ดหลัก
+│   ├── dashboard/         # หน้าแดชบอร์ดหลัก (ปรับใหม่ ไม่มีข้อมูลเงิน)
 │   ├── user/
 │   │   └── settings/      # ตั้งค่าผู้ใช้ (Dark mode, Font size)
 │   ├── basic-data/        # ข้อมูลพื้นฐาน
@@ -70,10 +90,9 @@ fleet-management-idea/
 │   │   ├── maintenance/   # ซ่อมบำรุงรถ
 │   │   ├── employees/     # สรุปพนักงานรายเดือน
 │   │   └── excel-templates/ # เทมเพลต Excel
-│   ├── company/           # จัดการข้อมูลบริษัท
-│   │   ├── income/        # รายได้บริษัท
-│   │   ├── expenses/      # รายจ่ายบริษัท
-│   │   └── settings/      # ตั้งค่าบริษัท
+│   ├── company-income/    # รายได้บริษัท
+│   ├── company-expenses/  # รายจ่ายบริษัท
+│   ├── company-settings/  # ตั้งค่าบริษัท
 │   ├── reports/           # รายงานต่างๆ
 │   ├── gpm/              # ระบบ GPM
 │   ├── line-oa/          # ระบบ LINE OA
@@ -83,17 +102,17 @@ fleet-management-idea/
 │   │   └── analytics/     # วิเคราะห์ผล
 │   ├── notifications/     # ระบบการแจ้งเตือน
 │   ├── approval-system/   # ระบบอนุมัติ
-│   └── admin/            # การจัดการระบบ
-│       ├── users/         # จัดการผู้ใช้งาน
-│       ├── roles/         # จัดการบทบาท
-│       ├── permissions/   # จัดการสิทธิ์การเข้าถึง
-│       └── system/        # ตั้งค่าระบบ
+│   ├── settings/          # ตั้งค่าทั่วไป
+│   │   ├── permissions/   # จัดการสิทธิ์
+│   │   ├── roles/         # จัดการบทบาท
+│   │   ├── system/        # ตั้งค่าระบบ
+│   │   └── users/         # จัดการผู้ใช้งาน
 ├── components/            # คอมโพเนนต์ที่ใช้ซ้ำ
 │   ├── ui/               # shadcn/ui components
-│   ├── header.tsx        # ส่วนหัว (พร้อม theme toggle)
+│   ├── header.tsx        # ส่วนหัว (พร้อม role switcher)
 │   ├── sidebar.tsx       # แถบข้าง (responsive)
 │   ├── app-layout.tsx    # เลย์เอาต์หลัก (header + sidebar)
-│   ├── admin-page-layout.tsx # เลย์เอาต์มาตรฐานสำหรับหน้า admin
+│   ├── login-form.tsx    # ฟอร์มเข้าสู่ระบบ
 │   └── theme-provider.tsx # Provider สำหรับ dark mode
 ├── hooks/                # Custom React hooks
 ├── lib/                  # ฟังก์ชันช่วยเหลือ
@@ -115,11 +134,14 @@ fleet-management-idea/
 - เปิด/ปิด dark mode
 - บันทึกการตั้งค่าอัตโนมัติ
 
-### 🔐 ระบบสิทธิ์การเข้าถึง
+### 🔐 ระบบสิทธิ์การเข้าถึงและบทบาท
 
-- ซ่อนเมนูหลักหากไม่มีสิทธิ์เข้าถึงเมนูย่อย
-- จัดการบทบาทผู้ใช้ (ฝ่ายบริหาร, ผู้ดูแลระบบ, etc.)
-- ควบคุมการแสดงผลตามสิทธิ์
+- **การจัดการบทบาท**: ฝ่ายบริหาร, ฝ่ายบุคลากร, ฝ่ายบัญชี/การเงิน, ฝ่ายปฏิบัติการ, ฝ่ายซ่อมบำรุง, ผู้ดูแลระบบ
+- **Multi-role support**: ผู้ใช้สามารถมีหลายบทบาทได้
+- **Role switching**: สลับบทบาทแบบ real-time จาก header dropdown
+- **Permission-based access**: สิทธิ์แยกตามฟีเจอร์ (view, edit, admin)
+- **Dynamic sidebar**: เมนูเปลี่ยนตามบทบาทปัจจุบัน
+- **ซ่อนเมนูหลักหากไม่มีสิทธิ์เข้าถึงเมนูย่อย**
 
 ### 📱 Responsive Design
 
@@ -131,22 +153,31 @@ fleet-management-idea/
 
 - **หน้าแรก**: redirect ไป `/login`
 - **หลังเข้าสู่ระบบ**: ไป `/dashboard`
-- **ตั้งค่าผู้ใช้**: `/user/settings` (เปลี่ยนจาก `/dashboard/settings`)
+- **ตั้งค่าผู้ใช้**: `/user/settings`
+
+### 📊 แดชบอร์ดใหม่
+
+- **ไม่มีข้อมูลทางการเงิน** - เหมาะสำหรับข้อมูลที่ละเอียดอ่อน
+- **แสดงภาพรวม**: คน, รถ, ลูกค้า, การดำเนินงาน
+- **Real-time status**: สถานะรถโม่, พนักงาน, เที่ยววิ่ง
+- **Visual indicators**: Progress bars, สีแยกตามสถานะ
+- **Actionable insights**: แสดงสิ่งที่ต้องดำเนินการ
 
 ## ฟีเจอร์หลัก
 
 ### 📊 แดชบอร์ดและรายงาน
 
-- ภาพรวมการดำเนินงาน
+- ภาพรวมการดำเนินงาน (ไม่รวมข้อมูลเงิน)
 - สถิติและกราฟ
 - การแจ้งเตือนที่สำคัญ
+- สถานะรถโม่และพนักงาน real-time
 
 ### 👥 การจัดการผู้ใช้และพนักงาน
 
 - ข้อมูลพนักงานพื้นฐาน
 - รายได้ประจำเดือนและประจำปี
 - จัดการภาษีเงินได้
-- ระบบสิทธิ์และบทบาท
+- ระบบสิทธิ์และบทบาทแบบยืดหยุ่น
 
 ### 🚛 การดำเนินงานขนส่ง
 
@@ -174,39 +205,6 @@ fleet-management-idea/
 - ดาวน์โหลดและอัพโหลด
 - คู่มือการใช้งาน
 
-## 🎯 การพัฒนาหน้าใหม่
-
-### การใช้ AdminPageLayout สำหรับหน้า Admin
-
-สำหรับหน้าใหม่ในส่วน admin ใช้ `AdminPageLayout` เพื่อความสม่ำเสมอของ UI:
-
-```tsx
-import { AdminPageLayout } from "@/components/admin-page-layout";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-
-export default function NewAdminPage() {
-	const headerActions = (
-		<Button>
-			<Plus className="h-4 w-4 mr-2" />
-			เพิ่มใหม่
-		</Button>
-	);
-
-	return (
-		<AdminPageLayout title="ชื่อหน้า" description="คำอธิบายหน้า" headerActions={headerActions}>
-			{/* เนื้อหาหน้า */}
-		</AdminPageLayout>
-	);
-}
-```
-
-### การใช้ spacing และ layout มาตรฐาน
-
-- ใช้ `p-6 space-y-6` สำหรับ container หลัก
-- ใช้ `grid gap-6 md:grid-cols-X` สำหรับการจัดเรียง cards
-- ใช้ theme-aware classes: `bg-card`, `text-foreground`, `border-border`
-
 ## การแก้ปัญหา
 
 ### ปัญหาที่พบบ่อย
@@ -232,8 +230,13 @@ export default function NewAdminPage() {
    - เคลียร์ localStorage: `localStorage.clear()`
 
 4. **การนำทางใน sidebar ไม่ทำงาน**
+
    - ตรวจสอบ path ใน `sidebar.tsx`
    - ตรวจสอบว่าไฟล์ page.tsx อยู่ในตำแหน่งที่ถูกต้อง
+
+5. **ปัญหาการสลับบทบาท**
+   - ตรวจสอบ localStorage สำหรับ userRoles และ currentRole
+   - ออกจากระบบแล้วเข้าใหม่เพื่อรีเซ็ตข้อมูล
 
 ### คำสั่งที่เป็นประโยชน์
 
@@ -275,23 +278,61 @@ pnpm build --debug # build พร้อม debug info
 
 ✅ **เสร็จสิ้นแล้ว:**
 
-- โครงสร้างโฟลเดอร์ใหม่ (ไม่ใช้ /dashboard อีกต่อไป)
+- โครงสร้างโฟลเดอร์ใหม่และทันสมัย
 - ระบบ dark mode และ theme toggle
 - ตั้งค่าผู้ใช้ (dark mode, font size)
-- การจัดการสิทธิ์การเข้าถึงเมนู
-- หน้า login เป็นหน้าแรก
-- Sidebar และ Header ที่รองรับ responsive
+- **ระบบบทบาทแบบยืดหยุ่น** - Multi-role support + Role switching
+- **แดชบอร์ดใหม่** - ไม่มีข้อมูลเงิน แสดงภาพรวมระบบ
+- **การจัดการสิทธิ์ขั้นสูง** - Per-feature permissions
+- หน้า login เป็นหน้าแรก พร้อมจำลองข้อมูลผู้ใช้
+- Sidebar และ Header ที่รองรับ responsive และ role-based
 - ทุกหน้าใช้ theme-aware components
 - ลบไฟล์และโฟลเดอร์เก่าที่ไม่ใช้แล้ว
 - สร้างหน้าที่ขาดหายไปทั้งหมด
-- ไม่มี TypeScript errors
-- README อัปเดตด้วยข้อมูลใหม่
+- **ไม่มี TypeScript errors และ build ผ่าน**
 
 🔄 **พร้อมใช้งาน:**
 
 - รัน `pnpm dev` เพื่อเริ่มใช้งาน
 - ทุก navigation link ทำงานได้
 - ทุกหน้ามี UI ที่สมบูรณ์และใช้งานได้
+- ระบบการสลับบทบาททำงานได้อย่างสมบูรณ์
+
+## การพัฒนาต่อ
+
+### 🎯 แนวทางการพัฒนาหน้าใหม่
+
+สำหรับหน้าใหม่ในส่วน admin ใช้ pattern มาตรฐาน:
+
+```tsx
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+
+export default function NewPage() {
+	return (
+		<div className="p-6 space-y-6">
+			<div className="flex items-center justify-between">
+				<div>
+					<h1 className="text-3xl font-bold">ชื่อหน้า</h1>
+					<p className="text-muted-foreground">คำอธิบายหน้า</p>
+				</div>
+				<Button>
+					<Plus className="h-4 w-4 mr-2" />
+					เพิ่มใหม่
+				</Button>
+			</div>
+			{/* เนื้อหาหน้า */}
+		</div>
+	);
+}
+```
+
+### การใช้ spacing และ layout มาตรฐาน
+
+- ใช้ `p-6 space-y-6` สำหรับ container หลัก
+- ใช้ `grid gap-6 md:grid-cols-X` สำหรับการจัดเรียง cards
+- ใช้ theme-aware classes: `bg-card`, `text-foreground`, `border-border`
 
 ## ติดต่อและสนับสนุน
 

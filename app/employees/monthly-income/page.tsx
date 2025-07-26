@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
 	Table,
@@ -11,54 +11,90 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Search, Plus, DollarSign, TrendingUp, Calendar, Download, Eye, Edit } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import {
+	Download,
+	Plus,
+	Search,
+	DollarSign,
+	TrendingUp,
+	Calendar,
+	Eye,
+	Edit,
+	Users,
+	Receipt,
+} from "lucide-react";
 
-export default function MonthlyIncomePage() {
-	const monthlyIncomes = [
-		{
-			id: "EMP001",
-			name: "นายสมชาย ใจดี",
-			position: "คนขับรถโม่",
-			month: "2024-01",
-			baseSalary: 18000,
-			overtime: 3750,
-			allowance: 1500,
-			bonus: 2000,
-			commission: 800,
-			totalIncome: 26050,
-			workingDays: 26,
-			overtimeHours: 15,
+// Mock data สำหรับรายได้ประจำเดือน
+const monthlyIncomes = [
+	{
+		id: 1,
+		employeeCode: "OP-DR-1-001",
+		employeeName: "สมชาย ใจดี",
+		department: "ปฏิบัติการ",
+		position: "คนขับรถบรรทุก",
+		avatar: "/placeholder-user.jpg",
+		month: "2024-12",
+		baseSalary: 25000,
+		overtime: 3500,
+		bonus: 2000,
+		allowances: {
+			transportation: 2000,
+			meal: 1500,
+			phone: 500,
+			other: 1500,
 		},
-		{
-			id: "EMP002",
-			name: "นายวิชัย รักงาน",
-			position: "หัวหน้าขนส่ง",
-			month: "2024-01",
-			baseSalary: 35000,
-			overtime: 2000,
-			allowance: 3000,
-			bonus: 5000,
-			commission: 0,
-			totalIncome: 45000,
-			workingDays: 26,
-			overtimeHours: 8,
+		deductions: {
+			tax: 2100,
+			socialSecurity: 750,
+			providentFund: 1750,
+			other: 0,
 		},
-		{
-			id: "EMP003",
-			name: "นางสุดา ขยันดี",
-			position: "เจ้าหน้าที่บัญชี",
-			month: "2024-01",
-			baseSalary: 25000,
-			overtime: 1250,
-			allowance: 2000,
-			bonus: 1500,
-			commission: 0,
-			totalIncome: 29750,
-			workingDays: 24,
-			overtimeHours: 5,
+		// ข้อมูลสะสมปัจจุบัน
+		yearToDateTotals: {
+			totalIncome: 558000, // รายได้สะสมปัจจุบัน
+			socialSecurityAccumulated: 9000, // ประกันสังคมยอดสะสมปัจจุบัน
+			taxAccumulated: 25200, // ภาษีหัก ณ ที่จ่ายสะสมปัจจุบัน
+			fuelAllowanceAccumulated: 55800, // เหมาน้ำมันสะสมปัจจุบัน
 		},
-	];
+		// ข้อมูลเดือนนี้
+		currentMonth: {
+			income: 46500, // รายได้เดือนนี้
+			socialSecurityDeduction: 750, // หักประกันสังคมเดือนนี้
+			taxDeduction: 2100, // ภาษีหัก ณ ที่จ่ายเดือนนี้
+			fuelAllowance10Percent: 4650, // เหมาน้ำมัน10%เดือนนี้
+		},
+		workingDays: 22,
+		overtimeHours: 0,
+		totalIncome: 46500,
+		totalDeductions: 4600,
+		netSalary: 41900,
+		status: "จ่ายแล้ว",
+		payDate: "2024-12-30",
+	},
+];
 
+// Mock data สำหรับสรุปรายได้รายเดือน
+const monthlySummary = {
+	totalEmployees: 24,
+	totalSalaryBudget: 580000,
+	totalPaid: 565200,
+	averageSalary: 23550,
+	topEarner: { name: "สมหญิง มีสุข", amount: 41900 },
+	totalOvertime: 42500,
+	totalBonuses: 28000,
+};
+
+export default function EmployeeMonthlyIncomePage() {
 	const formatCurrency = (amount: number) => {
 		return new Intl.NumberFormat("th-TH", {
 			style: "currency",
@@ -66,247 +102,475 @@ export default function MonthlyIncomePage() {
 		}).format(amount);
 	};
 
-	const totalMonthlyIncome = monthlyIncomes.reduce((sum, emp) => sum + emp.totalIncome, 0);
-	const averageIncome = totalMonthlyIncome / monthlyIncomes.length;
-
 	return (
 		<div className="p-6 space-y-6">
-			<div className="flex justify-between items-center">
-				<h1 className="text-3xl font-bold text-foreground">รายได้ประจำเดือน</h1>
-				<div className="flex gap-2">
-					<Button variant="outline" className="border-input">
-						<Download className="w-4 h-4 mr-2" />
-						ส่งออกรายงาน
-					</Button>
-					<Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-						<Plus className="w-4 h-4 mr-2" />
-						เพิ่มข้อมูลรายได้
-					</Button>
-				</div>
+			<div>
+				<h1 className="text-3xl font-bold">รายได้ประจำเดือน</h1>
+				<p className="text-muted-foreground">จัดการเงินเดือนและรายได้ประจำเดือนของพนักงาน</p>
 			</div>
 
-			<Card className="bg-card border-border">
-				<CardHeader>
-					<CardTitle className="text-card-foreground">เลือกเดือน/ปี และค้นหา</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="flex gap-4 items-center">
-						<Input
-							type="month"
-							defaultValue="2024-01"
-							className="bg-background border-input w-40"
-						/>
-						<div className="relative flex-1">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-							<Input
-								placeholder="ค้นหาชื่อพนักงาน หรือรหัสพนักงาน..."
-								className="pl-10 bg-background border-input"
-							/>
-						</div>
-						<Button variant="outline" className="border-input">
-							ค้นหา
-						</Button>
-					</div>
-				</CardContent>
-			</Card>
+			<Tabs defaultValue="salaries" className="space-y-4">
+				<TabsList className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+					<TabsTrigger value="salaries">เงินเดือนรายคน</TabsTrigger>
+					<TabsTrigger value="summary">สรุปรายเดือน</TabsTrigger>
+					<TabsTrigger value="payroll">ใบจ่ายเงินเดือน</TabsTrigger>
+				</TabsList>
 
-			<Card className="bg-card border-border">
-				<CardHeader>
-					<CardTitle className="text-card-foreground flex items-center gap-2">
-						<DollarSign className="w-5 h-5" />
-						รายได้ประจำเดือน - มกราคม 2567
-					</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead className="text-muted-foreground">รหัสพนักงาน</TableHead>
-								<TableHead className="text-muted-foreground">ชื่อ-นามสกุล</TableHead>
-								<TableHead className="text-muted-foreground">ตำแหน่ง</TableHead>
-								<TableHead className="text-muted-foreground">เงินเดือนพื้นฐาน</TableHead>
-								<TableHead className="text-muted-foreground">ค่า OT</TableHead>
-								<TableHead className="text-muted-foreground">เบี้ยเลี้ยง</TableHead>
-								<TableHead className="text-muted-foreground">โบนัส</TableHead>
-								<TableHead className="text-muted-foreground">คอมมิชชั่น</TableHead>
-								<TableHead className="text-muted-foreground">รวมรายได้</TableHead>
-								<TableHead className="text-muted-foreground">การดำเนินการ</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
+				<TabsContent value="salaries" className="mt-2">
+					<div className="space-y-6">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center space-x-4">
+								<div className="relative">
+									<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+									<Input placeholder="ค้นหาพนักงาน..." className="pl-10 w-64" />
+								</div>
+								<Select>
+									<SelectTrigger className="w-48">
+										<SelectValue placeholder="เลือกเดือน" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="2024-12">ธันวาคม 2024</SelectItem>
+										<SelectItem value="2024-11">พฤศจิกายน 2024</SelectItem>
+										<SelectItem value="2024-10">ตุลาคม 2024</SelectItem>
+										<SelectItem value="2024-09">กันยายน 2024</SelectItem>
+									</SelectContent>
+								</Select>
+								<Select>
+									<SelectTrigger className="w-48">
+										<SelectValue placeholder="เลือกฝ่าย" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="all">ทุกฝ่าย</SelectItem>
+										<SelectItem value="operation">ปฏิบัติการ</SelectItem>
+										<SelectItem value="admin">บริหาร</SelectItem>
+										<SelectItem value="accounting">บัญชี</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
+							<Button>
+								<Plus className="h-4 w-4 mr-2" />
+								คำนวณเงินเดือน
+							</Button>
+						</div>
+
+						<div className="grid gap-4">
 							{monthlyIncomes.map((income) => (
-								<TableRow key={income.id} className="hover:bg-muted/50">
-									<TableCell className="font-medium text-foreground">{income.id}</TableCell>
-									<TableCell className="text-foreground">{income.name}</TableCell>
-									<TableCell className="text-foreground">{income.position}</TableCell>
-									<TableCell className="text-foreground">
-										{formatCurrency(income.baseSalary)}
-									</TableCell>
-									<TableCell className="text-foreground">
-										{formatCurrency(income.overtime)}
-									</TableCell>
-									<TableCell className="text-foreground">
-										{formatCurrency(income.allowance)}
-									</TableCell>
-									<TableCell className="text-foreground">{formatCurrency(income.bonus)}</TableCell>
-									<TableCell className="text-foreground">
-										{formatCurrency(income.commission)}
-									</TableCell>
-									<TableCell className="font-bold text-foreground">
-										{formatCurrency(income.totalIncome)}
-									</TableCell>
-									<TableCell>
-										<div className="flex gap-2">
-											<Button variant="outline" size="sm">
-												<Eye className="w-4 h-4 mr-1" />
-												ดู
-											</Button>
-											<Button variant="outline" size="sm">
-												<Edit className="w-4 h-4 mr-1" />
-												แก้ไข
-											</Button>
-										</div>
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</CardContent>
-			</Card>
+								<Card key={income.id}>
+									<CardContent className="p-6">
+										<div className="flex items-start justify-between">
+											<div className="flex items-start space-x-4">
+												<Avatar className="h-16 w-16">
+													<AvatarImage src={income.avatar} alt={income.employeeName} />
+													<AvatarFallback>
+														{income.employeeName.split(" ")[0].charAt(0)}
+														{income.employeeName.split(" ")[1]?.charAt(0)}
+													</AvatarFallback>
+												</Avatar>
+												<div className="space-y-3 flex-1">
+													<div className="flex items-center space-x-2">
+														<h3 className="text-lg font-semibold">{income.employeeName}</h3>
+														<Badge variant="outline">{income.employeeCode}</Badge>
+														<Badge variant={income.status === "จ่ายแล้ว" ? "default" : "secondary"}>
+															{income.status}
+														</Badge>
+													</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-				<Card className="bg-card border-border">
-					<CardContent className="p-6">
-						<div className="flex items-center gap-2">
-							<DollarSign className="w-8 h-8 text-green-500" />
-							<div>
-								<p className="text-xl font-bold text-foreground">
-									{(totalMonthlyIncome / 1000).toFixed(0)}K
-								</p>
-								<p className="text-sm text-muted-foreground">รายได้รวม (บาท)</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+													<div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+														<div>
+															<span className="text-muted-foreground">ฝ่าย/ตำแหน่ง:</span>
+															<div className="font-medium">
+																{income.department} / {income.position}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">เดือน:</span>
+															<div className="font-medium">{income.month}</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">วันทำงาน:</span>
+															<div className="font-medium">{income.workingDays} วัน</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">OT:</span>
+															<div className="font-medium">{income.overtimeHours} ชม.</div>
+														</div>
+													</div>
 
-				<Card className="bg-card border-border">
-					<CardContent className="p-6">
-						<div className="flex items-center gap-2">
-							<TrendingUp className="w-8 h-8 text-blue-500" />
-							<div>
-								<p className="text-xl font-bold text-foreground">
-									{(averageIncome / 1000).toFixed(0)}K
-								</p>
-								<p className="text-sm text-muted-foreground">เฉลี่ยต่อคน (บาท)</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+													<div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+														<div>
+															<span className="text-muted-foreground">เงินเดือนพื้นฐาน:</span>
+															<div className="font-medium text-blue-600">
+																{formatCurrency(income.baseSalary)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">ค่าล่วงเวลา:</span>
+															<div className="font-medium text-green-600">
+																{formatCurrency(income.overtime)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">โบนัส:</span>
+															<div className="font-medium text-green-600">
+																{formatCurrency(income.bonus)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">เบี้ยเลี้ยงอื่นๆ:</span>
+															<div className="font-medium text-green-600">
+																{formatCurrency(
+																	Object.values(income.allowances).reduce((a, b) => a + b, 0)
+																)}
+															</div>
+														</div>
+													</div>
 
-				<Card className="bg-card border-border">
-					<CardContent className="p-6">
-						<div className="flex items-center gap-2">
-							<Calendar className="w-8 h-8 text-purple-500" />
-							<div>
-								<p className="text-2xl font-bold text-foreground">25</p>
-								<p className="text-sm text-muted-foreground">วันทำงานเฉลี่ย</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
+													<div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+														<div>
+															<span className="text-muted-foreground">รายได้รวม:</span>
+															<div className="font-bold text-green-600">
+																{formatCurrency(income.totalIncome)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">หักรวม:</span>
+															<div className="font-medium text-red-600">
+																{formatCurrency(income.totalDeductions)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">รายได้สุทธิ:</span>
+															<div className="font-bold text-2xl text-blue-600">
+																{formatCurrency(income.netSalary)}
+															</div>
+														</div>
+														<div>
+															<span className="text-muted-foreground">วันที่จ่าย:</span>
+															<div className="font-medium">{income.payDate}</div>
+														</div>
+													</div>
 
-				<Card className="bg-card border-border">
-					<CardContent className="p-6">
-						<div className="flex items-center gap-2">
-							<TrendingUp className="w-8 h-8 text-yellow-500" />
-							<div>
-								<p className="text-2xl font-bold text-foreground">9.3</p>
-								<p className="text-sm text-muted-foreground">ชั่วโมง OT เฉลี่ย</p>
-							</div>
-						</div>
-					</CardContent>
-				</Card>
-			</div>
+													{/* ข้อมูลสะสมและเดือนปัจจุบัน */}
+													<div className="border-t pt-4 mt-4">
+														<h4 className="font-semibold mb-3 text-primary">ข้อมูลสะสมปัจจุบัน</h4>
+														<div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+															<div>
+																<span className="text-muted-foreground">รายได้สะสมปัจจุบัน:</span>
+																<div className="font-bold text-green-600">
+																	{formatCurrency(income.yearToDateTotals.totalIncome)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">ประกันสังคมสะสม:</span>
+																<div className="font-medium text-orange-600">
+																	{formatCurrency(
+																		income.yearToDateTotals.socialSecurityAccumulated
+																	)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">
+																	ภาษีหัก ณ ที่จ่ายสะสม:
+																</span>
+																<div className="font-medium text-red-600">
+																	{formatCurrency(income.yearToDateTotals.taxAccumulated)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">เหมาน้ำมันสะสม:</span>
+																<div className="font-medium text-blue-600">
+																	{formatCurrency(income.yearToDateTotals.fuelAllowanceAccumulated)}
+																</div>
+															</div>
+														</div>
+													</div>
 
-			{/* Income Breakdown Chart */}
-			<Card className="bg-card border-border">
-				<CardHeader>
-					<CardTitle className="text-card-foreground">สัดส่วนรายได้</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<div className="space-y-4">
-							<h4 className="font-medium text-foreground">แยกตามประเภท</h4>
-							<div className="space-y-2">
-								<div className="flex justify-between items-center">
-									<span className="text-sm text-muted-foreground">เงินเดือนพื้นฐาน</span>
-									<span className="text-sm font-medium text-foreground">78.0%</span>
-								</div>
-								<div className="w-full bg-muted h-2 rounded-full">
-									<div className="bg-blue-500 h-2 rounded-full w-[78%]"></div>
-								</div>
-							</div>
-							<div className="space-y-2">
-								<div className="flex justify-between items-center">
-									<span className="text-sm text-muted-foreground">ค่าล่วงเวลา</span>
-									<span className="text-sm font-medium text-foreground">12.0%</span>
-								</div>
-								<div className="w-full bg-muted h-2 rounded-full">
-									<div className="bg-green-500 h-2 rounded-full w-[12%]"></div>
-								</div>
-							</div>
-							<div className="space-y-2">
-								<div className="flex justify-between items-center">
-									<span className="text-sm text-muted-foreground">โบนัส</span>
-									<span className="text-sm font-medium text-foreground">8.5%</span>
-								</div>
-								<div className="w-full bg-muted h-2 rounded-full">
-									<div className="bg-purple-500 h-2 rounded-full w-[8.5%]"></div>
-								</div>
-							</div>
-							<div className="space-y-2">
-								<div className="flex justify-between items-center">
-									<span className="text-sm text-muted-foreground">อื่นๆ</span>
-									<span className="text-sm font-medium text-foreground">1.5%</span>
-								</div>
-								<div className="w-full bg-muted h-2 rounded-full">
-									<div className="bg-yellow-500 h-2 rounded-full w-[1.5%]"></div>
-								</div>
-							</div>
-						</div>
-
-						<div className="space-y-4">
-							<h4 className="font-medium text-foreground">พนักงานรายได้สูงสุด</h4>
-							<div className="space-y-3">
-								{monthlyIncomes
-									.sort((a, b) => b.totalIncome - a.totalIncome)
-									.slice(0, 3)
-									.map((emp, index) => (
-										<div
-											key={emp.id}
-											className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
-										>
-											<div className="flex items-center gap-3">
-												<div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-bold">
-													{index + 1}
-												</div>
-												<div>
-													<p className="font-medium text-foreground">{emp.name}</p>
-													<p className="text-sm text-muted-foreground">{emp.position}</p>
+													<div className="border-t pt-4 mt-4">
+														<h4 className="font-semibold mb-3 text-primary">รายละเอียดเดือนนี้</h4>
+														<div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+															<div>
+																<span className="text-muted-foreground">รายได้เดือนนี้:</span>
+																<div className="font-bold text-green-600">
+																	{formatCurrency(income.currentMonth.income)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">
+																	หักประกันสังคมเดือนนี้:
+																</span>
+																<div className="font-medium text-orange-600">
+																	{formatCurrency(income.currentMonth.socialSecurityDeduction)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">
+																	ภาษีหัก ณ ที่จ่ายเดือนนี้:
+																</span>
+																<div className="font-medium text-red-600">
+																	{formatCurrency(income.currentMonth.taxDeduction)}
+																</div>
+															</div>
+															<div>
+																<span className="text-muted-foreground">
+																	เหมาน้ำมัน 10% เดือนนี้:
+																</span>
+																<div className="font-medium text-blue-600">
+																	{formatCurrency(income.currentMonth.fuelAllowance10Percent)}
+																</div>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
+											<div className="flex space-x-2">
+												<Button variant="outline" size="sm">
+													<Download className="h-4 w-4 mr-1" />
+													ใบจ่ายเงิน
+												</Button>
+												<Button variant="outline" size="sm">
+													<Edit className="h-4 w-4 mr-1" />
+													แก้ไข
+												</Button>
+											</div>
+										</div>
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					</div>
+				</TabsContent>
+
+				<TabsContent value="summary" className="mt-2">
+					<div className="space-y-6">
+						<div>
+							<h2 className="text-xl font-semibold">สรุปรายได้ประจำเดือน</h2>
+							<p className="text-muted-foreground">ภาพรวมการจ่ายเงินเดือนและค่าใช้จ่ายบุคลากร</p>
+						</div>
+
+						<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+							<Card>
+								<CardContent className="p-6">
+									<div className="flex items-center space-x-2">
+										<DollarSign className="h-8 w-8 text-blue-500" />
+										<div>
+											<p className="text-2xl font-bold text-foreground">
+												{formatCurrency(monthlySummary.totalPaid)}
+											</p>
+											<p className="text-sm text-muted-foreground">จ่ายทั้งหมด</p>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+
+							<Card>
+								<CardContent className="p-6">
+									<div className="flex items-center space-x-2">
+										<TrendingUp className="h-8 w-8 text-green-500" />
+										<div>
+											<p className="text-2xl font-bold text-foreground">
+												{formatCurrency(monthlySummary.averageSalary)}
+											</p>
+											<p className="text-sm text-muted-foreground">เงินเดือนเฉลี่ย</p>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+
+							<Card>
+								<CardContent className="p-6">
+									<div className="flex items-center space-x-2">
+										<Calendar className="h-8 w-8 text-purple-500" />
+										<div>
+											<p className="text-2xl font-bold text-foreground">
+												{monthlySummary.totalEmployees}
+											</p>
+											<p className="text-sm text-muted-foreground">พนักงานทั้งหมด</p>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+
+							<Card>
+								<CardContent className="p-6">
+									<div className="flex items-center space-x-2">
+										<Receipt className="h-8 w-8 text-orange-500" />
+										<div>
+											<p className="text-2xl font-bold text-foreground">
+												{formatCurrency(monthlySummary.totalOvertime)}
+											</p>
+											<p className="text-sm text-muted-foreground">ค่าล่วงเวลารวม</p>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						</div>
+
+						<Card>
+							<CardHeader>
+								<CardTitle>รายได้ตามฝ่าย</CardTitle>
+								<CardDescription>เปรียบเทียบรายได้เฉลี่ยของแต่ละฝ่าย</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									{[
+										{ department: "ฝ่ายบริหาร", avgSalary: 38500, employees: 3, total: 115500 },
+										{
+											department: "ฝ่ายปฏิบัติการ",
+											avgSalary: 21200,
+											employees: 15,
+											total: 318000,
+										},
+										{ department: "ฝ่ายบัญชี", avgSalary: 26800, employees: 4, total: 107200 },
+										{ department: "ฝ่ายซ่อมบำรุง", avgSalary: 24500, employees: 2, total: 49000 },
+									].map((dept, index) => (
+										<div
+											key={index}
+											className="flex items-center justify-between p-4 border rounded-lg"
+										>
+											<div>
+												<h4 className="font-medium">{dept.department}</h4>
+												<p className="text-sm text-muted-foreground">{dept.employees} คน</p>
+											</div>
 											<div className="text-right">
-												<p className="font-bold text-foreground">
-													{formatCurrency(emp.totalIncome)}
-												</p>
+												<div className="font-bold text-lg text-blue-600">
+													{formatCurrency(dept.avgSalary)}
+												</div>
+												<div className="text-sm text-muted-foreground">
+													รวม {formatCurrency(dept.total)}
+												</div>
 											</div>
 										</div>
 									))}
+								</div>
+							</CardContent>
+						</Card>
+
+						<Card>
+							<CardHeader>
+								<CardTitle>พนักงานรายได้สูงสุด</CardTitle>
+								<CardDescription>รายชื่อพนักงานที่มีรายได้สูงสุดประจำเดือน</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg">
+									<div className="flex items-center space-x-3">
+										<Avatar className="h-12 w-12">
+											<AvatarImage
+												src="/placeholder-user.jpg"
+												alt={monthlySummary.topEarner.name}
+											/>
+											<AvatarFallback>
+												{monthlySummary.topEarner.name.split(" ")[0].charAt(0)}
+												{monthlySummary.topEarner.name.split(" ")[1]?.charAt(0)}
+											</AvatarFallback>
+										</Avatar>
+										<div>
+											<h4 className="font-semibold">{monthlySummary.topEarner.name}</h4>
+											<p className="text-sm text-muted-foreground">ผู้จัดการ - ฝ่ายบริหาร</p>
+										</div>
+									</div>
+									<div className="text-right">
+										<div className="text-2xl font-bold text-green-600">
+											{formatCurrency(monthlySummary.topEarner.amount)}
+										</div>
+										<div className="text-sm text-muted-foreground">รายได้สุทธิ</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</div>
+				</TabsContent>
+
+				<TabsContent value="payroll" className="mt-2">
+					<div className="space-y-6">
+						<div className="flex items-center justify-between">
+							<div>
+								<h2 className="text-xl font-semibold">ใบจ่ายเงินเดือน</h2>
+								<p className="text-muted-foreground">สร้างและจัดการใบจ่ายเงินเดือนรายบุคคล</p>
+							</div>
+							<div className="flex space-x-2">
+								<Button variant="outline">
+									<Download className="h-4 w-4 mr-2" />
+									ดาวน์โหลดทั้งหมด
+								</Button>
+								<Button>
+									<Plus className="h-4 w-4 mr-2" />
+									สร้างใบจ่ายเงิน
+								</Button>
 							</div>
 						</div>
+
+						<Card>
+							<CardHeader>
+								<CardTitle>เลือกพนักงานสำหรับสร้างใบจ่ายเงิน</CardTitle>
+								<CardDescription>
+									เลือกพนักงานและเดือนที่ต้องการสร้างใบจ่ายเงินเดือน
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className="space-y-4">
+									<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+										<Select>
+											<SelectTrigger>
+												<SelectValue placeholder="เลือกเดือน" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="2024-12">ธันวาคม 2024</SelectItem>
+												<SelectItem value="2024-11">พฤศจิกายน 2024</SelectItem>
+												<SelectItem value="2024-10">ตุลาคม 2024</SelectItem>
+											</SelectContent>
+										</Select>
+										<Select>
+											<SelectTrigger>
+												<SelectValue placeholder="เลือกฝ่าย" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="all">ทุกฝ่าย</SelectItem>
+												<SelectItem value="operation">ปฏิบัติการ</SelectItem>
+												<SelectItem value="admin">บริหาร</SelectItem>
+											</SelectContent>
+										</Select>
+										<Button className="w-full">
+											<Search className="h-4 w-4 mr-2" />
+											ค้นหา
+										</Button>
+									</div>
+
+									<div className="border rounded-lg p-4">
+										<div className="space-y-3">
+											{monthlyIncomes.map((income) => (
+												<div
+													key={income.id}
+													className="flex items-center justify-between p-3 border rounded-lg"
+												>
+													<div className="flex items-center space-x-3">
+														<Avatar className="h-10 w-10">
+															<AvatarImage src={income.avatar} alt={income.employeeName} />
+															<AvatarFallback>
+																{income.employeeName.split(" ")[0].charAt(0)}
+																{income.employeeName.split(" ")[1]?.charAt(0)}
+															</AvatarFallback>
+														</Avatar>
+														<div>
+															<h4 className="font-medium">{income.employeeName}</h4>
+															<p className="text-sm text-muted-foreground">
+																{income.department} - {formatCurrency(income.netSalary)}
+															</p>
+														</div>
+													</div>
+													<Button variant="outline" size="sm">
+														<Download className="h-3 w-3 mr-1" />
+														ดาวน์โหลด
+													</Button>
+												</div>
+											))}
+										</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
 					</div>
-				</CardContent>
-			</Card>
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }
